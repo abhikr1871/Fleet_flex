@@ -1,0 +1,60 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white; /* Changed background color to white */
+  height: 80px; /* Adjusted height */
+  border-bottom: 1px solid #ccc;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  margin-left: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: #1a1a1a;
+  font-weight: normal; /* Changed to non-bold text */
+}
+
+nav ul li img {
+  width: 30px;
+  height: 30px;
+  filter: invert(10%); /* Ensure proper icon color */
+}
+
+.contact-button {
+  background-color: #ff5722;
+  color: white;
+  padding: 8px 12px;
+  cursor: pointer;
+  height:5px;
+}
+
+.contact-button:hover {
+  background-color: #e64a19;
+}
+
+/* New styles for the Home button */
+nav ul li a.home-button {
+  border: 1px solid black; /* Border radius added */
+  padding: 8px 12px;
+  height:5px;
+  width: 10px;
+}
