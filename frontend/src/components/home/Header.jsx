@@ -28,6 +28,11 @@ const Header = () => {
             </a>
           </li>
           <li>
+            <a href="#" className="home-button">
+              Services
+            </a>
+          </li>
+          <li>
             <a href="#" className="contact-button">
               Contact us
             </a>
