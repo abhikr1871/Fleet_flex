@@ -1,15 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Login.css";
+import { login } from "../../services/api";
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from "../../context/AuthContext";
+import axios from "axios";
 
 const Login = () => {
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const submithandeler=(e)=>{
+  const { isAuthenticated, setIsAuthenticated } = useAuthContext();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("hello");
-    setemail('');
-    setpassword('');
-  }
+
+    try {
+      const response = await login({ email, password });
+      console.log("response", response);
+      const message = response?.data?.message;
+      window.alert(message);
+
+      if (response?.data?.status === 1) {
+        localStorage.setItem("token", response?.data?.data?.token);
+        localStorage.setItem("userId", response?.data?.data?.user_id);
+
+        setIsAuthenticated(true);
+        setEmail("");
+        setPassword("");
+        navigate('/home');
+      } else {
+        window.alert("Token not received. Please try again.");
+      }
+    } catch (error) {
+      console.error(error?.message);
+      window.alert("Login failed. Please check your credentials and try again.");
+    }
+  };
 
   return (
     <div className="login-page">
@@ -24,21 +56,14 @@ const Login = () => {
           </button>
         </div>
 
-        <form
-          className="login-form"
-          onSubmit={(e) => {
-            submithandeler(e);
-          }}
-        >
+        <form className="login-form" onSubmit={submitHandler}>
           <div className="input-group">
             <input
               type="email"
               placeholder="Email address"
               required
               value={email}
-              onChange={(e) => {
-                setemail(e.target.value);
-              }}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="input-group">
@@ -47,18 +72,13 @@ const Login = () => {
               placeholder="Password"
               required
               value={password}
-              onChange={(e) => {
-                setpassword(e.target.password);
-              }}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <a href="#" className="forgot-password">
-            Forgot password?
-          </a>
-          <button type="submit" className="login-btn">
-            Log In
-          </button>
+          <a href="#" className="forgot-password">Forgot password?</a>
+          <button type="submit" className="login-btn">Log In</button>
         </form>
+
         <button
           className="login-btn captain-login"
           onClick={() => (window.location.href = "/captain_login")}
