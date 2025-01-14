@@ -24,6 +24,22 @@ const Login = () => {
           </button>
         </div>
 
+        <div className="social-buttons">
+          <button className="social-btn google">
+            <img src="/icons/google.svg" alt="Google" />
+            Google
+          </button>
+          <button className="social-btn apple">
+            <img src="/icons/apple.svg" alt="Apple" />
+            Apple
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div className="divider">
+          <span>or</span>
+        </div>
+
         <form
           className="login-form"
           onSubmit={(e) => {

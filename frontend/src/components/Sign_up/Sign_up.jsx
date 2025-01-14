@@ -3,7 +3,9 @@ import React, { useState } from "react";
 const Sign_up = () => {
   const [email, setemail] = useState("");
   const [username, setusername] = useState("");
-    const [password, setpassword] = useState("");
+  const [password, setpassword] = useState("");
+
+
   const submithandeler = (e) => {
     e.preventDefault();
     console.log("hello");
@@ -21,6 +23,21 @@ const Sign_up = () => {
           >
             Close
           </button>
+        </div>
+        <div className="social-buttons">
+          <button className="social-btn google">
+            <img src="/icons/google.svg" alt="Google" />
+            Google
+          </button>
+          <button className="social-btn apple">
+            <img src="/icons/apple.svg" alt="Apple" />
+            Apple
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div className="divider">
+          <span>or</span>
         </div>
         <form
           className="login-form"
