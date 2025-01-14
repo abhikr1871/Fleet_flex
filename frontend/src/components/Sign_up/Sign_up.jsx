@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 
 
+
 const SignUp = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuthContext();
   const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ const SignUp = () => {
   }, [isAuthenticated, navigate]);
 
   const submitHandler = async (e) => {
+
     e.preventDefault();
     try {
       const response = await signup({ username, email, password });
@@ -56,7 +58,11 @@ const SignUp = () => {
           </button>
         </div>
 
+
         <form className="login-form" onSubmit={submitHandler}>
+
+     
+
           <div className="input-group">
             <input
               type="text"
