@@ -213,3 +213,9 @@ h1 {
 .signup-link a:hover {
   text-decoration: underline;
 }
+.captain-login{
+  background-color: #ffc107;
+}
+.captain-login:hover{
+  background-color:#cddc39 ;
+}

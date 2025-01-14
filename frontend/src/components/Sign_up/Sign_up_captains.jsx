@@ -1,14 +1,14 @@
-
 import React, { useState } from "react";
-const Sign_up = () => {
+
+const Sign_up_captains = () => {
   const [email, setemail] = useState("");
   const [username, setusername] = useState("");
-    const [password, setpassword] = useState("");
+  const [password, setpassword] = useState("");
   const submithandeler = (e) => {
     e.preventDefault();
     console.log("hello");
-     setemail("");
-     setpassword("");
+    setemail("");
+    setpassword("");
   };
   return (
     <div className="login-page">
@@ -67,9 +67,9 @@ const Sign_up = () => {
         </form>
         <button
           className="login-btn captain-login"
-          onClick={() => (window.location.href = "/captain_sign_up")}
+          onClick={() => (window.location.href = "/signup")}
         >
-          Sign Un As Captain
+          Sign Up As User
         </button>
         <p className="signup-link">
           Already have an account? <a href="/login">Sign in</a>
@@ -77,6 +77,6 @@ const Sign_up = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Sign_up
+export default Sign_up_captains;
