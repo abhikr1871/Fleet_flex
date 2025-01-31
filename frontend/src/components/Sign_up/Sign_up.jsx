@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 
 
-
 const SignUp = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuthContext();
   const [email, setEmail] = useState("");
@@ -16,8 +15,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      
-      navigate("/");
+      navigate("/Main_home");
     }
   }, [isAuthenticated, navigate]);
 
@@ -32,7 +30,7 @@ const SignUp = () => {
         localStorage.setItem("userId", response?.data?.data?.user_id);
         setIsAuthenticated(true);
         window.alert("Signup successful!");
-        navigate("/");
+       // navigate("/");
       } else {
         window.alert(response?.data?.message || "Signup failed. Please try again.");
       }
@@ -50,19 +48,27 @@ const SignUp = () => {
       <div className="login-container">
         <div className="heading">
           <h2>Sign Up With</h2>
-          <button
-            className="close_btn"
-            onClick={() => navigate("/")}
-          >
+          <button className="close_btn" onClick={() => navigate("/")}>
             Close
           </button>
         </div>
 
+        <div className="social-buttons">
+          <button className="social-btn google">
+            <img src="/icons/google.svg" alt="Google" />
+            Google
+          </button>
+          <button className="social-btn apple">
+            <img src="/icons/apple.svg" alt="Apple" />
+            Apple
+          </button>
+        </div>
 
+        {/* Divider */}
+        <div className="divider">
+          <span>or</span>
+        </div>
         <form className="login-form" onSubmit={submitHandler}>
-
-     
-
           <div className="input-group">
             <input
               type="text"

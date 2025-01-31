@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const generateToken = (id, username, email) => {
-    return jwt.sign({ id, username, email }, process.env.JWT_Secret, { expiresIn: '30d' });
+    return jwt.sign({ id, username, email }, process.env.JWT_Secret, { expiresIn: '1h' });
 };
 
 const signup = async (req, res) => {
@@ -73,7 +73,7 @@ const login = async (req, res) => {
             };
 
             result.data = resp_data;
-            result.status = 1;
+            result.status = 1; 
             res.status(200).json(result);
         } else {
             result.message = "Invalid email or password";

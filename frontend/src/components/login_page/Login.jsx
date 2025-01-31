@@ -13,7 +13,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/home");
+      navigate("/Main_home");
     }
   }, [isAuthenticated, navigate]);
 
@@ -56,9 +56,22 @@ const Login = () => {
           </button>
         </div>
 
+        <div className="social-buttons">
+          <button className="social-btn google">
+            <img src="/icons/google.svg" alt="Google" />
+            Google
+          </button>
+          <button className="social-btn apple">
+            <img src="/icons/apple.svg" alt="Apple" />
+            Apple
+          </button>
+        </div>
 
+        {/* Divider */}
+        <div className="divider">
+          <span>or</span>
+        </div>
         <form className="login-form" onSubmit={submitHandler}>
-
           <div className="input-group">
             <input
               type="email"
@@ -77,8 +90,12 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <a href="#" className="forgot-password">Forgot password?</a>
-          <button type="submit" className="login-btn">Log In</button>
+          <a href="#" className="forgot-password">
+            Forgot password?
+          </a>
+          <button type="submit" className="login-btn">
+            Log In
+          </button>
         </form>
 
         <button

@@ -1,7 +1,10 @@
 import React from "react";
 import "./Header.css";
+import { useAuthContext } from "../../context/AuthContext"; // Import useAuthContext
 
 const Header = () => {
+  const { logout } = useAuthContext(); // Access logout function from context
+
   return (
     <header>
       <div className="logo">FleetFlex</div>
@@ -28,9 +31,9 @@ const Header = () => {
             </a>
           </li>
           <li>
-            <a href="#" className="home-button">
-              Services
-            </a>
+            <button onClick={logout} className="homebutton">
+              Logout
+            </button>
           </li>
           <li>
             <a href="#" className="contact-button">

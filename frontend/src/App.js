@@ -6,11 +6,14 @@ import Sign_up from "./components/Sign_up/Sign_up";
 import Login_captain from "./components/login_page/Login_captain";
 import Sign_up_captains from "./components/Sign_up/Sign_up_captains";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import Main_home from "./components/main_home/Main_home";
+import CaptainDashboard from "./components/captain_dahboard/CaptainDashboard";
 function App() {
   return (
     <div className="App">
-      <AuthProvider> {/* Wrap everything with AuthProvider */}
+      <AuthProvider>
+        {" "}
+        {/* Wrap everything with AuthProvider */}
         <Router>
           <Routes>
             <Route exact path="/" element={<Home1 />} />
@@ -18,6 +21,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/captain_login" element={<Login_captain />} />
             <Route path="/captain_sign_up" element={<Sign_up_captains />} />
+            <Route exact path="/Main_home" element={<Main_home />} />
+            <Route path="/CaptainDashboard" element={<CaptainDashboard />} />
           </Routes>
         </Router>
       </AuthProvider>

@@ -15,8 +15,18 @@ API.interceptors.request.use((config) => {
 });
 export const signup = (userData) => API.post('/users/signup', userData);
 export const login = (userData) => API.post('/users/login', userData);
+export const signup2 = (userData) => API.post("/captain/captain_sign_up", userData);
+export const login2 = (userData) => API.post("/captain/captain_login", userData);
+
+export const getCaptainVehicles = () => API.get("/captain/vehicles");
+export const addCaptainVehicle = (vehicleData) =>
+  API.post("/captain/add_vehicle", vehicleData);
 
 export default {
-    signup,
-    login,
+  signup,
+  login,
+  signup2,
+  login2,
+  getCaptainVehicles,
+  addCaptainVehicle,
 };
