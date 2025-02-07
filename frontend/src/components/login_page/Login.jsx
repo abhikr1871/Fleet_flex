@@ -13,7 +13,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/Main_home");
+      navigate("/Main_home", { replace: true });
     }
   }, [isAuthenticated, navigate]);
 

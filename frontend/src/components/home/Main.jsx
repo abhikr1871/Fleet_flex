@@ -1,7 +1,7 @@
 // src/components/Main.js
 import React from "react";
 import "./Main.css"; // Import Main CSS
-
+   
 function Main() {
   return (
     <main className="main">

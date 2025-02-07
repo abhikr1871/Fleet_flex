@@ -15,9 +15,9 @@ const SignUp = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/Main_home");
+      navigate("/Main_home", { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated]);
 
   const submitHandler = async (e) => {
 
@@ -30,7 +30,7 @@ const SignUp = () => {
         localStorage.setItem("userId", response?.data?.data?.user_id);
         setIsAuthenticated(true);
         window.alert("Signup successful!");
-       // navigate("/");
+        //navigate("/");
       } else {
         window.alert(response?.data?.message || "Signup failed. Please try again.");
       }

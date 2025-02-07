@@ -1,7 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Main_home.css";
+import { useAuthContext } from "../../context/AuthContext"; // Import useAuthContext
+ import { useNavigate } from "react-router-dom";
 
 function Main_home() {
+  const navigate = useNavigate();
+  const { isAuthenticated, setIsAuthenticated, logout } = useAuthContext(); // Access logout function from context
+
+  const token = localStorage.getItem("token");
+  
+    useEffect(() => {
+      if (!isAuthenticated) {
+        navigate("/");
+      }
+    }, [isAuthenticated, navigate]);
+
   const [formData, setFormData] = useState({
     purpose: "",
     pickupLocation: "",
@@ -25,6 +38,9 @@ function Main_home() {
     <div className="main-home">
       {/* Header Section */}
       <header className="header">
+        <button onClick={logout} className="homebutton">
+          Logout
+        </button>
         <div className="logo">FleetFlex</div>
         <div className="header-buttons">
           <button className="home-btn">Home</button>

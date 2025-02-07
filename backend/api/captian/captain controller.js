@@ -90,7 +90,7 @@ const login = async (req, res) => {
   }
 };
 
-
+// Get Vehicles
 const getVehicles = async (req, res) => {
   try {
     const captain = await Captain.findById(req.user.id);
@@ -100,41 +100,54 @@ const getVehicles = async (req, res) => {
   }
 };
 
+// Add Vehicle
 const addVehicle = async (req, res) => {
   try {
     const captain = await Captain.findById(req.user.id);
     const newVehicle = req.body;
     captain.vehicles.push(newVehicle);
     await captain.save();
-    res
-      .status(200)
-      .json({ status: 1, message: "Vehicle added", data: captain.vehicles });
+    res.status(200).json({
+      status: 1,
+      message: "Vehicle added",
+      data: captain.vehicles,
+    });
   } catch (error) {
     res.status(500).json({ status: 0, message: error.message });
   }
 };
 
-const goLive = async (req, res) => {
+// Update Vehicle Status (Go Live / Go Offline)
+// This function updates the "isLive" property of a specific vehicle.
+// The new status is provided in the request body (e.g., { isLive: true } or { isLive: false }).
+const updateVehicleStatus = async (req, res) => {
   try {
     const { vehicleId } = req.params;
+    const { isLive } = req.body; // expect a boolean value
     const captain = await Captain.findById(req.user.id);
     const vehicle = captain.vehicles.find(
       (v) => v._id.toString() === vehicleId
     );
 
-    if (!vehicle)
+    if (!vehicle) {
       return res.status(404).json({ status: 0, message: "Vehicle not found" });
+    }
 
-    vehicle.isLive = true;
+    // Update the vehicle's live status
+    vehicle.isLive = isLive;
     await captain.save();
 
-    res.status(200).json({ status: 1, message: "Vehicle is now live" });
+    const message = isLive ? "Vehicle is now live" : "Vehicle is now offline";
+    res.status(200).json({ status: 1, message });
   } catch (error) {
     res.status(500).json({ status: 0, message: error.message });
   }
 };
 
-
-
-
-module.exports = { signup, login , getVehicles, addVehicle };
+module.exports = {
+  signup,
+  login,
+  getVehicles,
+  addVehicle,
+  updateVehicleStatus,
+};

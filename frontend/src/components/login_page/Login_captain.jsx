@@ -62,7 +62,7 @@ const Login_captain = () => {
               required
               value={password}
               onChange={(e) => {
-                setpassword(e.target.password);
+                setpassword(e.target.value);
               }}
             />
           </div>

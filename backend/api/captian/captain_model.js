@@ -9,6 +9,7 @@ const vehicleSchema = new mongoose.Schema({
   capacity: Number,
   perKmRate: Number,
   numberplate: String,
+  type:String,
   isLive: { type: Boolean, default: false },
 });
 const captainSchema = new mongoose.Schema(

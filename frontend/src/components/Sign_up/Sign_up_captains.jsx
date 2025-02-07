@@ -12,7 +12,7 @@ const Sign_up_captains = () => {
 
   useEffect(() => {
       if (isAuthenticated) {
-        navigate("/CaptainDashboard");
+        navigate("/CaptainDashboard", { replace: true });
       }
     }, [isAuthenticated, navigate]);
   const submithandeler =async (e) => {

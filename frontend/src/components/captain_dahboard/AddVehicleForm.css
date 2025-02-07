@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Modal overlay to cover the entire screen */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent dark background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* ensure the modal is on top */
+}
+
+/* Form container styling */
+.add-vehicle-form {
+  font-family: 'Montserrat', sans-serif;
+  width: 400px;
+  padding: 20px;
+  border: 2px solid red; /* red border for the form container */
+  border-radius: 8px;
+  background-color: #fff; /* white background */
+}
+
+/* Form title styling */
+.add-vehicle-form h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Form element styling */
+.add-vehicle-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input and select styling */
+.add-vehicle-form input,
+.add-vehicle-form select {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid red; /* red border on inputs and select */
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+/* Focus state styling for inputs and select */
+.add-vehicle-form input:focus,
+.add-vehicle-form select:focus {
+  outline: none;
+  border-color: darkred; /* darker red on focus */
+}
+
+/* Submit button styling */
+.add-vehicle-form button[type="submit"] {
+  padding: 10px;
+  border: 2px solid red; /* red border for the submit button */
+  background-color: transparent;
+  color: #333;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 15px;
+}
+
+/* Hover state for submit button */
+.add-vehicle-form button[type="submit"]:hover {
+  background-color: #f2f2f2;
+}
+
+/* Cancel button styling */
+.cancel-btn {
+  padding: 10px;
+  border: 2px solid red; /* red border for the cancel button */
+  background-color: transparent;
+  color: #333;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover state for cancel button */
+.cancel-btn:hover {
+  background-color: #f2f2f2;
+}

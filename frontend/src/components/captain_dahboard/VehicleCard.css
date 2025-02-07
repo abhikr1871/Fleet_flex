@@ -1,0 +1,48 @@
+/* VehicleCard.css */
+
+.vehicle-card {
+  border: 2px solid black;       /* Black solid border */
+  border-radius: 5px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  width: 280px;                  /* Slightly narrower width */
+  background-color: #fff;        /* White background */
+  font-size: 16px;   
+  margin-top: 10px;            /* Base font size for the card */
+}
+
+/* Vehicle name styling */
+.vehicle-card h4 {
+  margin: 0 0 10px 0;
+  text-align: left;
+  font-size: 20px;               /* Increased font size for the header */
+}
+
+/* Vehicle details styling (model, capacity, rate per km) */
+.vehicle-card p {
+  margin: 5px 0;               /* Provides a gap between lines */
+  text-align: left;
+  font-size: 16px;             /* Increased font size for details */
+}
+
+/* Style for the "Go Live" button */
+.go-live-btn {
+  align-self: flex-start;      /* Places the button at the left */
+  margin-top: 10px;            /* Adds some spacing above the button */
+  padding: 8px 12px;
+  border: 1px solid black;     /* Black border on the button */
+  background-color: transparent;
+  color: black;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  font-size: 16px;             /* Increased font size for the button */
+}
+
+/* Hover state for the button */
+.go-live-btn:hover {
+  background-color: #f2f2f2;
+}
