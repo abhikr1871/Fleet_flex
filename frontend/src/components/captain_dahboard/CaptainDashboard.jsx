@@ -11,27 +11,26 @@ const CaptainDashboard = () => {
   const { isAuthenticated, logout, user, authLoading } = useAuthContext();
   const [vehicles, setVehicles] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [vehicleData, setVehicleData] = useState({
     name: "",
     model: "",
     capacity: "",
     perKmRate: "",
     numberplate: "",
-    type: "", // New parameter if needed in the future
+    type: "",
+    photo: null,
   });
 
-  // Retrieve the token from localStorage
   const token = localStorage.getItem("token");
   const username = user?.name || "Captain";
 
-  // Redirect to home if not authenticated (only after auth state is determined)
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       navigate("/");
     }
   }, [isAuthenticated, authLoading, navigate]);
 
-  // Fetch vehicles whenever token changes
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
@@ -44,13 +43,11 @@ const CaptainDashboard = () => {
       }
     };
 
-    // Only fetch if token exists (and thus user is expected to be authenticated)
     if (token) {
       fetchVehicles();
     }
   }, [token]);
 
-  // Handle "Go Live" action on a vehicle (for non-live vehicles)
   const handleGoLive = async (vehicleId) => {
     try {
       await api.updateVehicleStatus(
@@ -58,7 +55,6 @@ const CaptainDashboard = () => {
         { isLive: true },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // Re-fetch vehicles after updating status
       const response = await api.getCaptainVehicles({
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -70,7 +66,6 @@ const CaptainDashboard = () => {
     }
   };
 
-  // Handle "Go Offline" action on a vehicle (for live vehicles)
   const handleGoOffline = async (vehicleId) => {
     try {
       await api.updateVehicleStatus(
@@ -78,7 +73,6 @@ const CaptainDashboard = () => {
         { isLive: false },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // Re-fetch vehicles after updating status
       const response = await api.getCaptainVehicles({
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -90,7 +84,6 @@ const CaptainDashboard = () => {
     }
   };
 
-  // Handle input changes for the vehicle form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setVehicleData((prevData) => ({
@@ -99,16 +92,22 @@ const CaptainDashboard = () => {
     }));
   };
 
-  // Handle adding a new vehicle
   const handleAddVehicle = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    for (const key in vehicleData) {
+      formData.append(key, vehicleData[key]);
+    }
+
     try {
-      const response = await api.addCaptainVehicle(vehicleData, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await api.addCaptainVehicle(formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
       if (response.data.status === 1) {
         alert("Vehicle added successfully!");
-        // Re-fetch vehicles after adding
         const resp = await api.getCaptainVehicles({
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -121,6 +120,7 @@ const CaptainDashboard = () => {
           perKmRate: "",
           numberplate: "",
           type: "",
+          photo: null,
         });
       }
     } catch (error) {
@@ -129,21 +129,46 @@ const CaptainDashboard = () => {
     }
   };
 
-  // Split vehicles into live and non-live arrays
   const liveVehicles = vehicles.filter((v) => v.isLive);
   const nonLiveVehicles = vehicles.filter((v) => !v.isLive);
 
   return (
     <div className="dashboard-container">
+      {/* Sidebar Menu */}
+
       {/* Header */}
       <div className="dashboard-header">
-        <h2>Hi, {username}</h2>
+        <button className="menu-button" onClick={() => setSidebarOpen(true)}>
+          ☰
+        </button>
+        {sidebarOpen && (
+          <div
+            className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <div className="sidebar" onClick={(e) => e.stopPropagation()}>
+              <button
+                className="close-sidebar"
+                onClick={() => setSidebarOpen(false)}
+              >
+                ✖
+              </button>
+              <ul>
+                <li onClick={() => navigate("/chats")}>Chats</li>
+                <li onClick={() => navigate("/completed-rides")}>
+                  Completed Rides
+                </li>
+                <li onClick={() => navigate("/profile")}>Profile</li>
+              </ul>
+            </div>
+          </div>
+        )}
+        <h2 className="header-text">Hi, {username}</h2>
         <button onClick={logout} className="logout-button">
           Logout
         </button>
       </div>
 
-      {/* Live Vehicles Section */}
       <h3>Live Vehicles</h3>
       <div className="vehicles-list">
         {liveVehicles.length > 0 ? (
@@ -151,18 +176,14 @@ const CaptainDashboard = () => {
             <VehicleCard
               key={vehicle._id}
               vehicle={vehicle}
-              handleGoOffline={handleGoOffline} // Pass the offline handler for live vehicles
+              handleGoOffline={handleGoOffline}
             />
           ))
         ) : (
           <p>No live vehicles.</p>
         )}
       </div>
-
-      {/* Divider Line */}
       <hr className="divider" />
-
-      {/* Non-Live Vehicles Section */}
       <h3>Non-Live Vehicles</h3>
       <div className="vehicles-list">
         {nonLiveVehicles.length > 0 ? (
@@ -170,22 +191,19 @@ const CaptainDashboard = () => {
             <VehicleCard
               key={vehicle._id}
               vehicle={vehicle}
-              handleGoLive={handleGoLive} // Pass the live handler for non-live vehicles
+              handleGoLive={handleGoLive}
             />
           ))
         ) : (
           <p>No non-live vehicles.</p>
         )}
       </div>
-
-      {/* Add Vehicle Section */}
       <button
         className="add-vehicle-btn"
         onClick={() => setShowForm(!showForm)}
       >
         Add Vehicle
       </button>
-
       {showForm && (
         <AddVehicleForm
           handleAddVehicle={handleAddVehicle}

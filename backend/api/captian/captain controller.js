@@ -104,13 +104,38 @@ const getVehicles = async (req, res) => {
 const addVehicle = async (req, res) => {
   try {
     const captain = await Captain.findById(req.user.id);
-    const newVehicle = req.body;
+    if (!captain) {
+      return res.status(404).json({ status: 0, message: "Captain not found" });
+    }
+
+    // Extract vehicle details
+    const { name, model, capacity, perKmRate, numberplate, type } = req.body;
+    console.log("Uploaded File:", req.file);
+
+    // Check if a file was uploaded
+    const photograph = req.file ? `/uploads/${req.file.filename}` : null;
+
+
+    // Create a new vehicle object
+    const newVehicle = {
+      name,
+      model,
+      capacity,
+      perKmRate,
+      numberplate,
+      type,
+      photo:photograph, // Save image URL
+      isLive: false, // Default status
+    };
+
+    // Add vehicle to captain's profile
     captain.vehicles.push(newVehicle);
     await captain.save();
+
     res.status(200).json({
       status: 1,
-      message: "Vehicle added",
-      data: captain.vehicles,
+      message: "Vehicle added successfully",
+      data: newVehicle,
     });
   } catch (error) {
     res.status(500).json({ status: 0, message: error.message });

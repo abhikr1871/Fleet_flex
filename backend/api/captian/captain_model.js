@@ -1,7 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-
-
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const vehicleSchema = new mongoose.Schema({
   name: String,
@@ -9,17 +7,17 @@ const vehicleSchema = new mongoose.Schema({
   capacity: Number,
   perKmRate: Number,
   numberplate: String,
-  type:String,
+  type: String,
+  photo: String, // Added field for vehicle image URL
   isLive: { type: Boolean, default: false },
 });
+
 const captainSchema = new mongoose.Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    vehicles: [{
-      type: vehicleSchema, 
-    }],
+    vehicles: [vehicleSchema],
     createdAt: {
       type: Date,
       default: Date.now,

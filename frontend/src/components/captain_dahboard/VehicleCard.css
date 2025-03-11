@@ -1,48 +1,69 @@
-/* VehicleCard.css */
-
 .vehicle-card {
-  border: 2px solid black;       /* Black solid border */
-  border-radius: 5px;
-  padding: 20px;
+  border: 2px solid black;  
+  border-radius: 8px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 220px;
-  width: 280px;                  /* Slightly narrower width */
-  background-color: #fff;        /* White background */
-  font-size: 16px;   
-  margin-top: 10px;            /* Base font size for the card */
+  width: 280px;  
+  background-color: #fff;  
+  font-size: 16px;
+  margin-top: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
 }
 
-/* Vehicle name styling */
-.vehicle-card h4 {
-  margin: 0 0 10px 0;
+.vehicle-card:hover {
+  transform: scale(1.03);
+}
+
+/* Vehicle Image */
+.vehicle-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Vehicle Details */
+.vehicle-info h4 {
+  margin: 0 0 8px 0;
   text-align: left;
-  font-size: 20px;               /* Increased font size for the header */
+  font-size: 20px;
 }
 
-/* Vehicle details styling (model, capacity, rate per km) */
-.vehicle-card p {
-  margin: 5px 0;               /* Provides a gap between lines */
+.vehicle-info p {
+  margin: 5px 0;
   text-align: left;
-  font-size: 16px;             /* Increased font size for details */
+  font-size: 16px;
 }
 
-/* Style for the "Go Live" button */
-.go-live-btn {
-  align-self: flex-start;      /* Places the button at the left */
-  margin-top: 10px;            /* Adds some spacing above the button */
+/* Buttons */
+.vehicle-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.go-live-btn,
+.go-offline-btn {
   padding: 8px 12px;
-  border: 1px solid black;     /* Black border on the button */
+  border: 1px solid black;
   background-color: transparent;
   color: black;
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.2s ease;
-  font-size: 16px;             /* Increased font size for the button */
+  font-size: 16px;
 }
 
-/* Hover state for the button */
 .go-live-btn:hover {
-  background-color: #f2f2f2;
+  background-color: #28a745;
+  color: white;
+}
+
+.go-offline-btn:hover {
+  background-color: #dc3545;
+  color: white;
 }
