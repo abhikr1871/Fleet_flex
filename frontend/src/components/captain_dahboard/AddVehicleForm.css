@@ -1,90 +1,109 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
-/* Modal overlay to cover the entire screen */
+/* Full-Screen Modal Overlay */
 .modal-overlay {
-  position: fixed;
+  position: fixed; /* Keeps it on top without affecting other content */
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent dark background */
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 999; /* ensure the modal is on top */
+  align-items: flex-start;
+  padding-top: 100px; /* Keeps 100px margin from top */
+  z-index: 1000; /* Ensures it stays above other content */
 }
 
-/* Form container styling */
+/* Add Vehicle Form - Adjusted Width */
 .add-vehicle-form {
-  font-family: 'Montserrat', sans-serif;
-  width: 400px;
+  width: 80vw; /* Adjusted width to avoid covering entire screen */
+  max-height: calc(100vh - 120px); /* Prevents overflow */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   padding: 20px;
-  border: 2px solid red; /* red border for the form container */
   border-radius: 8px;
-  background-color: #fff; /* white background */
+  overflow-y: auto; /* Allows scrolling if needed */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
 }
 
-/* Form title styling */
+/* Prevent background scrolling */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Form Header */
 .add-vehicle-form h3 {
   text-align: center;
   margin-bottom: 20px;
+  font-size: 24px;
   color: #333;
 }
 
-/* Form element styling */
+/* Form Layout (More Inputs Per Row) */
 .add-vehicle-form form {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+  width: 100%;
 }
 
-/* Input and select styling */
+/* Input Fields */
 .add-vehicle-form input,
 .add-vehicle-form select {
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 2px solid red; /* red border on inputs and select */
-  border-radius: 4px;
+  flex: 1;
+  min-width: 250px; /* Ensures a proper layout */
+  padding: 12px;
+  border: 2px solid red;
+  border-radius: 5px;
   font-size: 16px;
 }
 
-/* Focus state styling for inputs and select */
-.add-vehicle-form input:focus,
-.add-vehicle-form select:focus {
-  outline: none;
-  border-color: darkred; /* darker red on focus */
+/* Ensures Three Inputs Per Row */
+.input-group {
+  display: flex;
+  gap: 15px;
+  width: 100%;
 }
 
-/* Submit button styling */
-.add-vehicle-form button[type="submit"] {
-  padding: 10px;
-  border: 2px solid red; /* red border for the submit button */
+.input-group > * {
+  flex: 1;
+}
+
+/* Buttons */
+.add-vehicle-form button {
+  padding: 12px;
+  width: 100%;
+  border: 2px solid red;
   background-color: transparent;
   color: #333;
   font-size: 16px;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-bottom: 15px;
+  transition: 0.2s;
+  margin-bottom: 10px;
 }
 
-/* Hover state for submit button */
-.add-vehicle-form button[type="submit"]:hover {
+/* Hover Effect */
+.add-vehicle-form button:hover {
   background-color: #f2f2f2;
 }
 
-/* Cancel button styling */
-.cancel-btn {
-  padding: 10px;
-  border: 2px solid red; /* red border for the cancel button */
-  background-color: transparent;
-  color: #333;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .add-vehicle-form {
+    width: 90vw; /* Slightly wider on smaller screens */
+  }
 }
 
-/* Hover state for cancel button */
-.cancel-btn:hover {
-  background-color: #f2f2f2;
+@media (max-width: 768px) {
+  .input-group {
+    flex-wrap: wrap;
+  }
+
+  .input-group > * {
+    flex: 1 1 100%;
+  }
 }

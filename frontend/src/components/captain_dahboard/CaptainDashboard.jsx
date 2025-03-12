@@ -12,6 +12,7 @@ const CaptainDashboard = () => {
   const [vehicles, setVehicles] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [vehicleData, setVehicleData] = useState({
     name: "",
     model: "",
@@ -19,7 +20,12 @@ const CaptainDashboard = () => {
     perKmRate: "",
     numberplate: "",
     type: "",
+    fuelType: "",
+    dimensions: { length: "", width: "", height: "" },
+    weightCapacity: "",
+    acAvailable: false,
     photo: null,
+    driver: { name: "", contact: "", licenseNumber: "" },
   });
 
   const token = localStorage.getItem("token");
@@ -85,20 +91,55 @@ const CaptainDashboard = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setVehicleData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, type, checked } = e.target;
+
+    if (name.startsWith("driver.")) {
+      const field = name.split(".")[1];
+      setVehicleData((prevData) => ({
+        ...prevData,
+        driver: { ...prevData.driver, [field]: value },
+      }));
+    } else if (name.startsWith("dimensions.")) {
+      const field = name.split(".")[1];
+      setVehicleData((prevData) => ({
+        ...prevData,
+        dimensions: { ...prevData.dimensions, [field]: value },
+      }));
+    } else if (type === "checkbox") {
+      setVehicleData((prevData) => ({
+        ...prevData,
+        [name]: checked,
+      }));
+    } else {
+      setVehicleData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleAddVehicle = async (e) => {
     e.preventDefault();
     const formData = new FormData();
+    // Loop through keys in vehicleData
     for (const key in vehicleData) {
-      formData.append(key, vehicleData[key]);
+      if (key === "driver") {
+        // Append each driver field separately with dot notation
+        for (const subKey in vehicleData.driver) {
+          formData.append(`driver.${subKey}`, vehicleData.driver[subKey]);
+        }
+      } else if (key === "dimensions") {
+        // Append each dimension field separately
+        for (const subKey in vehicleData.dimensions) {
+          formData.append(
+            `dimensions.${subKey}`,
+            vehicleData.dimensions[subKey]
+          );
+        }
+      } else {
+        formData.append(key, vehicleData[key]);
+      }
     }
-
     try {
       const response = await api.addCaptainVehicle(formData, {
         headers: {
@@ -120,7 +161,12 @@ const CaptainDashboard = () => {
           perKmRate: "",
           numberplate: "",
           type: "",
+          fuelType: "",
+          dimensions: { length: "", width: "", height: "" },
+          weightCapacity: "",
+          acAvailable: false,
           photo: null,
+          driver: { name: "", contact: "", licenseNumber: "" },
         });
       }
     } catch (error) {
@@ -134,9 +180,7 @@ const CaptainDashboard = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar Menu */}
-
-      {/* Header */}
+      {/* Sidebar Menu & Header */}
       <div className="dashboard-header">
         <button className="menu-button" onClick={() => setSidebarOpen(true)}>
           ☰
@@ -169,6 +213,14 @@ const CaptainDashboard = () => {
         </button>
       </div>
 
+      {showForm && (
+        <AddVehicleForm
+          handleAddVehicle={handleAddVehicle}
+          handleInputChange={handleInputChange}
+          setShowForm={setShowForm}
+        />
+      )}
+
       <h3>Live Vehicles</h3>
       <div className="vehicles-list">
         {liveVehicles.length > 0 ? (
@@ -183,7 +235,7 @@ const CaptainDashboard = () => {
           <p>No live vehicles.</p>
         )}
       </div>
-      <hr className="divider" />
+
       <h3>Non-Live Vehicles</h3>
       <div className="vehicles-list">
         {nonLiveVehicles.length > 0 ? (
@@ -198,19 +250,13 @@ const CaptainDashboard = () => {
           <p>No non-live vehicles.</p>
         )}
       </div>
+
       <button
         className="add-vehicle-btn"
         onClick={() => setShowForm(!showForm)}
       >
         Add Vehicle
       </button>
-      {showForm && (
-        <AddVehicleForm
-          handleAddVehicle={handleAddVehicle}
-          handleInputChange={handleInputChange}
-          setShowForm={setShowForm}
-        />
-      )}
     </div>
   );
 };

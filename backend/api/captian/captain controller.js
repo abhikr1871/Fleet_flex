@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const Captain = require("./captain_model"); // Assuming Captain model is in `models/Captain.js`
+const Captain = require("./captain_model"); // Adjust path as needed
 
 // Generate JWT Token
 const generateToken = (id, username, email) => {
@@ -21,7 +21,6 @@ const signup = async (req, res) => {
 
   try {
     const existingCaptain = await Captain.findOne({ email });
-
     if (existingCaptain) {
       result.message = "Captain already exists";
       return res.status(400).json(result);
@@ -66,7 +65,6 @@ const login = async (req, res) => {
 
   try {
     const captain = await Captain.findOne({ email });
-
     if (captain && (await bcrypt.compare(password, captain.password))) {
       const resp_data = {
         _id: captain._id,
@@ -103,20 +101,67 @@ const getVehicles = async (req, res) => {
 // Add Vehicle
 const addVehicle = async (req, res) => {
   try {
+    // Verify that the captain exists
     const captain = await Captain.findById(req.user.id);
     if (!captain) {
       return res.status(404).json({ status: 0, message: "Captain not found" });
     }
 
-    // Extract vehicle details
-    const { name, model, capacity, perKmRate, numberplate, type } = req.body;
-    console.log("Uploaded File:", req.file);
+    // Extract flat keys from req.body
+    const {
+      name,
+      model,
+      capacity,
+      perKmRate,
+      numberplate,
+      type,
+      fuelType,
+      weightCapacity,
+      acAvailable,
+    } = req.body;
+
+    // Reconstruct dimensions and driver objects from flat keys
+    const dimensions = {
+      length: req.body["dimensions.length"] || 0,
+      width: req.body["dimensions.width"] || 0,
+      height: req.body["dimensions.height"] || 0,
+    };
+
+    const driver = {
+      name: req.body["driver.name"],
+      contact: req.body["driver.contact"],
+      licenseNumber: req.body["driver.licenseNumber"],
+    };
+
+    // Validate required fields for the new vehicle only
+    if (
+      !name ||
+      !model ||
+      !capacity ||
+      !perKmRate ||
+      !numberplate ||
+      !type ||
+      !fuelType ||
+      !driver.name ||
+      !driver.contact ||
+      !driver.licenseNumber
+    ) {
+      return res
+        .status(400)
+        .json({ status: 0, message: "Missing required fields" });
+    }
+
+    console.log(
+      "Request Driver Details:",
+      driver.name,
+      driver.contact,
+      driver.licenseNumber
+    );
 
     // Check if a file was uploaded
     const photograph = req.file ? `/uploads/${req.file.filename}` : null;
 
-
-    // Create a new vehicle object
+    // Create the new vehicle object
     const newVehicle = {
       name,
       model,
@@ -124,13 +169,24 @@ const addVehicle = async (req, res) => {
       perKmRate,
       numberplate,
       type,
-      photo:photograph, // Save image URL
-      isLive: false, // Default status
+      fuelType,
+      weightCapacity: weightCapacity || 0,
+      acAvailable: acAvailable || false,
+      photo: photograph,
+      isLive: false,
+      dimensions,
+      driver,
     };
 
-    // Add vehicle to captain's profile
-    captain.vehicles.push(newVehicle);
-    await captain.save();
+    // Instead of pushing and then saving (which revalidates all vehicles),
+    // use an atomic update so only the new vehicle is validated.
+    await Captain.updateOne(
+      { _id: req.user.id },
+      { $push: { vehicles: newVehicle } },
+      { runValidators: true }
+    );
+
+    console.log("New Vehicle:", newVehicle);
 
     res.status(200).json({
       status: 1,
@@ -138,30 +194,30 @@ const addVehicle = async (req, res) => {
       data: newVehicle,
     });
   } catch (error) {
+    console.error("Error adding vehicle:", error);
     res.status(500).json({ status: 0, message: error.message });
   }
 };
 
 // Update Vehicle Status (Go Live / Go Offline)
-// This function updates the "isLive" property of a specific vehicle.
-// The new status is provided in the request body (e.g., { isLive: true } or { isLive: false }).
 const updateVehicleStatus = async (req, res) => {
   try {
     const { vehicleId } = req.params;
-    const { isLive } = req.body; // expect a boolean value
-    const captain = await Captain.findById(req.user.id);
-    const vehicle = captain.vehicles.find(
-      (v) => v._id.toString() === vehicleId
+    const { isLive } = req.body;
+    // Use an atomic update to modify just the vehicle's isLive field
+    const result = await Captain.updateOne(
+      { _id: req.user.id, "vehicles._id": vehicleId },
+      { $set: { "vehicles.$.isLive": isLive } },
+      { runValidators: true }
     );
 
-    if (!vehicle) {
-      return res.status(404).json({ status: 0, message: "Vehicle not found" });
+    if (result.modifiedCount === 0) {
+      return res
+        .status(404)
+        .json({ status: 0, message: "Vehicle not found or not updated" });
     }
 
-    // Update the vehicle's live status
-    vehicle.isLive = isLive;
-    await captain.save();
-
+    console.log("Update Vehicle Status Request:", req.body);
     const message = isLive ? "Vehicle is now live" : "Vehicle is now offline";
     res.status(200).json({ status: 1, message });
   } catch (error) {

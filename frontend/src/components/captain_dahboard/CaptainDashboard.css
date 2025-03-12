@@ -91,3 +91,29 @@
   cursor: pointer;
   border-radius: 5px;
 }
+.add-vehicle-btn{
+  margin-left: 40%;
+}
+
+
+
+.add-vehicle-btn {
+  position: fixed; /* Ensures it stays in place */
+  bottom: 20px; /* Adjust this value for positioning from bottom */
+  left: 50%; /* Centering horizontally */
+  transform: translateX(-50%); /* Perfect centering */
+  z-index: 1000; /* Ensures it stays above other elements */
+  padding: 10px 20px;
+  border: 2px solid red;
+  background-color: white;
+  color: #333;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover effect */
+.add-vehicle-btn:hover {
+  background-color: #f2f2f2;
+}

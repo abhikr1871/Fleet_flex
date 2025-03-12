@@ -1,13 +1,39 @@
 import React, { useState } from "react";
+import { login2 } from "../../services/api";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Login_captain = () => {
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const submithandeler = (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { isAuthenticated, setIsAuthenticated } = useAuthContext();
+  const navigate = useNavigate();
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("hello");
-    setemail("");
-    setpassword("");
+    try {
+      const response = await login2({ email, password });
+      console.log("Login response:", response);
+
+      if (response?.data?.status === 1) {
+        // Store token and user ID
+        localStorage.setItem("token", response?.data?.data?.token);
+        localStorage.setItem("userId", response?.data?.data?.user_id);
+
+        // Update auth state and navigate
+        setIsAuthenticated(true);
+        window.alert("Login successful!");
+        navigate("/CaptainDashboard");
+      } else {
+        window.alert(response?.data?.message || "Login failed. Try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error?.message);
+      window.alert("An error occurred. Please try again later.");
+    }
+
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -15,10 +41,7 @@ const Login_captain = () => {
       <div className="login-container">
         <div className="heading">
           <h2>FleetFlex</h2>
-          <button
-            className="close_btn"
-            onClick={() => (window.location.href = "/")}
-          >
+          <button className="close_btn" onClick={() => navigate("/")}>
             Close
           </button>
         </div>
@@ -38,21 +61,15 @@ const Login_captain = () => {
         <div className="divider">
           <span>or</span>
         </div>
-        <form
-          className="login-form"
-          onSubmit={(e) => {
-            submithandeler(e);
-          }}
-        >
+
+        <form className="login-form" onSubmit={submitHandler}>
           <div className="input-group">
             <input
               type="email"
               placeholder="Email address"
               required
               value={email}
-              onChange={(e) => {
-                setemail(e.target.value);
-              }}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="input-group">
@@ -61,9 +78,7 @@ const Login_captain = () => {
               placeholder="Password"
               required
               value={password}
-              onChange={(e) => {
-                setpassword(e.target.value);
-              }}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <a href="#" className="forgot-password">
@@ -73,12 +88,14 @@ const Login_captain = () => {
             Log In
           </button>
         </form>
+
         <button
           className="login-btn captain-login"
-          onClick={() => (window.location.href = "/login")}
+          onClick={() => navigate("/login")}
         >
           Log in As User
         </button>
+
         <p className="signup-link">
           Don't have an account? <a href="/signup">Sign up</a>
         </p>

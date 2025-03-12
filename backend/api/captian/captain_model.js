@@ -1,27 +1,48 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const vehicleSchema = new mongoose.Schema({
-  name: String,
-  model: String,
-  capacity: Number,
-  perKmRate: Number,
-  numberplate: String,
-  type: String,
-  photo: String, // Added field for vehicle image URL
-  isLive: { type: Boolean, default: false },
-});
+const vehicleSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    model: { type: String, required: true },
+    capacity: { type: Number, required: true },
+    perKmRate: { type: Number, required: true },
+    numberplate: { type: String, required: true, unique: true },
+    type: {
+      type: String,
+      enum: ["transport", "passenger travel"],
+      required: true,
+    },
+    fuelType: {
+      type: String,
+      enum: ["petrol", "diesel", "CNG", "electric"],
+      required: true,
+    },
+    dimensions: {
+      length: { type: Number, default: 0 },
+      width: { type: Number, default: 0 },
+      height: { type: Number, default: 0 },
+    },
+    weightCapacity: { type: Number, default: 0 },
+    acAvailable: { type: Boolean, default: false },
+    photo: { type: String, required: true },
+    isLive: { type: Boolean, default: false },
+    driver: {
+      name: { type: String, required: true },
+      contact: { type: String, required: true },
+      licenseNumber: { type: String, required: true },
+    },
+  },
+  { timestamps: true }
+);
 
 const captainSchema = new mongoose.Schema(
   {
     username: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     vehicles: [vehicleSchema],
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+    createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
