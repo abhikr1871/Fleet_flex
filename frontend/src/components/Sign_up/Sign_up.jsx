@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 
 
-
 const SignUp = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuthContext();
   const [email, setEmail] = useState("");
@@ -16,10 +15,9 @@ const SignUp = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      
-      navigate("/");
+      navigate("/Main_home", { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated]);
 
   const submitHandler = async (e) => {
 
@@ -30,9 +28,11 @@ const SignUp = () => {
       if (response?.data?.status === 1) {
         localStorage.setItem("token", response?.data?.data?.token);
         localStorage.setItem("userId", response?.data?.data?.user_id);
+        localStorage.setItem("username", response?.data?.data?.username);
+        localStorage.setItem("role", "user");
         setIsAuthenticated(true);
         window.alert("Signup successful!");
-        navigate("/");
+        //navigate("/");
       } else {
         window.alert(response?.data?.message || "Signup failed. Please try again.");
       }
@@ -50,19 +50,28 @@ const SignUp = () => {
       <div className="login-container">
         <div className="heading">
           <h2>Sign Up With</h2>
-          <button
-            className="close_btn"
-            onClick={() => navigate("/")}
-          >
+          <button className="close_btn" onClick={() => navigate("/")}>
             Close
           </button>
         </div>
 
+        <div className="social-buttons">
+          <button className="social-btn google">
+            <img src="/icons/google.svg" alt="Google" />
+            Google
+          </button>
+          <button className="social-btn apple">
+            <img src="/icons/apple.svg" alt="Apple" />
+            Apple
+          </button>
+        </div>
 
+        {/* Divider */}
+        <div className="divider">
+          <span>or</span>
+        </div>
         <form className="login-form" onSubmit={submitHandler}>
-
-     
-
+          <h3 className="sing-inst">Singning up as User</h3>
           <div className="input-group">
             <input
               type="text"

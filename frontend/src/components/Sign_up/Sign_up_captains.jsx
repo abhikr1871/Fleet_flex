@@ -1,13 +1,42 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+import { signup2 } from "../../services/api";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
+import CaptainDashboard from "../captain_dahboard/CaptainDashboard";
 const Sign_up_captains = () => {
   const [email, setemail] = useState("");
   const [username, setusername] = useState("");
   const [password, setpassword] = useState("");
-  const submithandeler = (e) => {
+  const { isAuthenticated, setIsAuthenticated } = useAuthContext();
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+      if (isAuthenticated) {
+        navigate("/CaptainDashboard", { replace: true });
+      }
+    }, [isAuthenticated, navigate]);
+  const submithandeler =async (e) => {
     e.preventDefault();
-    console.log("hello");
+    try {
+          const response = await signup2({ username, email, password });
+          console.log("response", response);
+          if (response?.data?.status === 1) {
+            localStorage.setItem("token", response?.data?.data?.token);
+            localStorage.setItem("userId", response?.data?.data?.user_id);
+            localStorage.setItem("username", response?.data?.data?.username);
+            localStorage.setItem("role", "captain");
+            setIsAuthenticated(true);
+            window.alert("Signup successful!");
+           // navigate("/");
+          } else {
+            window.alert(response?.data?.message || "Signup failed. Please try again.");
+          }
+        } catch (error) {
+          console.error("Signup error:", error?.message);
+          window.alert("An error occurred. Please try again later.");
+        }
     setemail("");
+    setusername("");
     setpassword("");
   };
   return (
@@ -44,6 +73,7 @@ const Sign_up_captains = () => {
             submithandeler(e);
           }}
         >
+          <h3 className="sing-inst">Singning up as Captain</h3>
           <div className="input-group">
             <input
               type="username"
@@ -73,7 +103,7 @@ const Sign_up_captains = () => {
               required
               value={password}
               onChange={(e) => {
-                setpassword(e.target.password);
+                setpassword(e.target.value);
               }}
             />
           </div>

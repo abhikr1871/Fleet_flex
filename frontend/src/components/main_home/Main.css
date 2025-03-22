@@ -1,0 +1,44 @@
+.main {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  min-height: calc(100vh - 122px);
+}
+
+.main-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.main-content {
+  margin-left: 50px;
+  max-width: 800px;
+}
+
+.main h1 {
+  font-size: 4em;
+  margin-bottom: 20px;
+}
+
+.main p {
+  line-height: 2;
+  margin-bottom: 30px;
+}
+
+.book {
+  border-radius: 2px;
+}
+
+.buttons2 button {
+  padding: 10px 20px;
+  border: 2px solid red;
+  cursor: pointer;
+  color: red;
+  font-size: large;
+  font-style: inherit;
+}
+
+
+
