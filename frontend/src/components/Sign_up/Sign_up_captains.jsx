@@ -23,6 +23,8 @@ const Sign_up_captains = () => {
           if (response?.data?.status === 1) {
             localStorage.setItem("token", response?.data?.data?.token);
             localStorage.setItem("userId", response?.data?.data?.user_id);
+            localStorage.setItem("username", response?.data?.data?.username);
+            localStorage.setItem("role", "captain");
             setIsAuthenticated(true);
             window.alert("Signup successful!");
            // navigate("/");
@@ -71,6 +73,7 @@ const Sign_up_captains = () => {
             submithandeler(e);
           }}
         >
+          <h3 className="sing-inst">Singning up as Captain</h3>
           <div className="input-group">
             <input
               type="username"

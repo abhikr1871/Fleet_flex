@@ -1,7 +1,12 @@
 import React from "react";
 import "./VehicleCard.css";
 
-const VehicleCard = ({ vehicle, handleGoLive, handleGoOffline }) => {
+const VehicleCard = ({
+  vehicle,
+  handleGoLive,
+  handleGoOffline,
+  handleDeleteVehicle,
+}) => {
   const backendURL = "http://localhost:4000";
   const imageUrl = vehicle.photo
     ? `${backendURL}${vehicle.photo}` // Directly append the stored path
@@ -19,7 +24,7 @@ const VehicleCard = ({ vehicle, handleGoLive, handleGoOffline }) => {
       {/* Vehicle Details */}
       <div className="vehicle-info">
         <h4>{vehicle.name}</h4>
-        <p>Model: {vehicle.model}</p>
+        <p>Model: {vehicle.driver?.name}</p>
         <p>Capacity: {vehicle.capacity}</p>
         <p>Rate per km: {vehicle.perKmRate}</p>
       </div>
@@ -41,6 +46,12 @@ const VehicleCard = ({ vehicle, handleGoLive, handleGoOffline }) => {
             Go Live
           </button>
         ) : null}
+        <button
+          className="delete-btn"
+          onClick={() => handleDeleteVehicle(vehicle._id)}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );

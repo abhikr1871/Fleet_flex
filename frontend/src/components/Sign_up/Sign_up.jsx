@@ -28,6 +28,8 @@ const SignUp = () => {
       if (response?.data?.status === 1) {
         localStorage.setItem("token", response?.data?.data?.token);
         localStorage.setItem("userId", response?.data?.data?.user_id);
+        localStorage.setItem("username", response?.data?.data?.username);
+        localStorage.setItem("role", "user");
         setIsAuthenticated(true);
         window.alert("Signup successful!");
         //navigate("/");
@@ -69,6 +71,7 @@ const SignUp = () => {
           <span>or</span>
         </div>
         <form className="login-form" onSubmit={submitHandler}>
+          <h3 className="sing-inst">Singning up as User</h3>
           <div className="input-group">
             <input
               type="text"

@@ -34,6 +34,9 @@ export const addCaptainVehicle = (vehicleData) =>
 export const updateVehicleStatus = (vehicleId, statusData) =>
   API.patch(`/captain/update_vehicle_status/${vehicleId}`, statusData);
 
+export const delete_vehicle = (vehicleId, statusData) =>
+  API.patch(`/captain/delete_vehicle/${vehicleId}`, statusData);
+
 export default {
   signup,
   login,
@@ -42,4 +45,5 @@ export default {
   getCaptainVehicles,
   addCaptainVehicle,
   updateVehicleStatus,
+  delete_vehicle,
 };

@@ -29,7 +29,7 @@ const CaptainDashboard = () => {
   });
 
   const token = localStorage.getItem("token");
-  const username = user?.name || "Captain";
+  const username = localStorage.getItem("username");
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -54,23 +54,43 @@ const CaptainDashboard = () => {
     }
   }, [token]);
 
-  const handleGoLive = async (vehicleId) => {
-    try {
-      await api.updateVehicleStatus(
-        vehicleId,
-        { isLive: true },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      const response = await api.getCaptainVehicles({
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setVehicles(response.data.data);
-      alert(`Vehicle ${vehicleId} is now live!`);
-    } catch (error) {
-      console.error("Error updating vehicle status:", error);
-      alert("Failed to update vehicle status");
+  const handleGoLive = (vehicleId) => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          await api.updateVehicleStatus(
+            vehicleId,
+            { isLive: true, latitude, longitude },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
+          setVehicles((prevVehicles) =>
+            prevVehicles.map((vehicle) =>
+              vehicle._id === vehicleId
+                ? { ...vehicle, isLive: true, latitude, longitude }
+                : vehicle
+            )
+          );
+           alert(`Vehicle ${vehicleId} is now live!`);
+        } catch (error) {
+          console.error("Error updating vehicle location:", error);
+          alert("Failed to update vehicle location.");
+        }
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        alert("Failed to get location. Please allow location access.");
+      }
+    );
   };
+
 
   const handleGoOffline = async (vehicleId) => {
     try {
@@ -175,6 +195,33 @@ const CaptainDashboard = () => {
     }
   };
 
+   const handleDeleteVehicle = async (vehicleId) => {
+     // Show confirmation dialog
+     const confirmDelete = window.confirm(
+       "Are you sure you want to delete this vehicle?"
+     );
+
+     if (!confirmDelete) return;
+
+     try {
+       await api.delete_vehicle(vehicleId, {
+         headers: { Authorization: `Bearer ${token}` },
+       });
+
+       // Fetch updated vehicle list
+       const resp = await api.getCaptainVehicles({
+         headers: { Authorization: `Bearer ${token}` },
+       });
+       setVehicles(resp.data.data);
+
+       alert("Vehicle deleted successfully!");
+     } catch (error) {
+       console.error("Error deleting vehicle:", error);
+       alert("Failed to delete vehicle");
+     }
+   };
+
+
   const liveVehicles = vehicles.filter((v) => v.isLive);
   const nonLiveVehicles = vehicles.filter((v) => !v.isLive);
 
@@ -221,7 +268,7 @@ const CaptainDashboard = () => {
         />
       )}
 
-      <h3>Live Vehicles</h3>
+      <h3 className="live-nonlive">Live Vehicles</h3>
       <div className="vehicles-list">
         {liveVehicles.length > 0 ? (
           liveVehicles.map((vehicle) => (
@@ -229,6 +276,7 @@ const CaptainDashboard = () => {
               key={vehicle._id}
               vehicle={vehicle}
               handleGoOffline={handleGoOffline}
+              handleDeleteVehicle={handleDeleteVehicle}
             />
           ))
         ) : (
@@ -236,7 +284,7 @@ const CaptainDashboard = () => {
         )}
       </div>
 
-      <h3>Non-Live Vehicles</h3>
+      <h3 className="live-nonlive">Non-Live Vehicles</h3>
       <div className="vehicles-list">
         {nonLiveVehicles.length > 0 ? (
           nonLiveVehicles.map((vehicle) => (
@@ -244,6 +292,7 @@ const CaptainDashboard = () => {
               key={vehicle._id}
               vehicle={vehicle}
               handleGoLive={handleGoLive}
+              handleDeleteVehicle={handleDeleteVehicle}
             />
           ))
         ) : (

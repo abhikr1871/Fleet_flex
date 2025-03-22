@@ -8,6 +8,8 @@ export const AuthProvider = ({ children }) => {
   console.log("isAuthenticated", isAuthenticated);
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const username = localStorage.getItem("username");
+    const role = localStorage.getItem("role");
     setIsAuthenticated(!!token);
     console.log("AuthContext updated:", isAuthenticated);  // Log here
      setAuthLoading(false);
@@ -15,6 +17,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem("username");
+    localStorage.removeItem("role");
     setIsAuthenticated(false);
   };
 

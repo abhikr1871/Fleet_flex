@@ -1,14 +1,11 @@
-.dashboard-container {
-  position: relative;
-  padding: 20px;
-}
-
 .dashboard-header {
+  margin-left: 50px;
+  margin-right: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 15px 20px;
-  background: #f4f4f4;
+  background: #ffffff;
   border-bottom: 2px solid #ccc;
   position: relative;
 }
@@ -91,42 +88,3 @@
   cursor: pointer;
   border-radius: 5px;
 }
-.add-vehicle-btn{
-  margin-left: 40%;
-}
-
-
-
-.add-vehicle-btn {
-  position: fixed; /* Ensures it stays in place */
-  bottom: 20px; /* Adjust this value for positioning from bottom */
-  left: 50%; /* Centering horizontally */
-  transform: translateX(-50%); /* Perfect centering */
-  z-index: 1000; /* Ensures it stays above other elements */
-  padding: 10px 20px;
-  border: 2px solid red;
-  background-color: white;
-  color: #333;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-/* Hover effect */
-.add-vehicle-btn:hover {
-  background-color: #f2f2f2;
-}
-
-.vehicles-list{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: 80px;
-}
-.live-nonlive{
-  margin-left: 60px;
-}
-
