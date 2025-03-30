@@ -38,7 +38,7 @@ const signup = async (req, res) => {
             user_id: userId,
             username: user.username,
             email: user.email,
-            token: generateToken(user._id, user.username, user.email)
+            token: generateToken(user._id, user.username, user.email),
         };
 
         result.data = resp_data;
@@ -69,7 +69,7 @@ const login = async (req, res) => {
                 user_id: user.user_id,
                 username: user.username,
                 email: user.email,
-                token: generateToken(user._id, user.username, user.email)
+                token: generateToken(user._id, user.username, user.email),
             };
 
             result.data = resp_data;
