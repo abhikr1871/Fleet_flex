@@ -27,14 +27,26 @@ const vehicleSchema = new mongoose.Schema(
     acAvailable: { type: Boolean, default: false },
     photo: { type: String, required: true },
     isLive: { type: Boolean, default: false },
+    bookingType: {
+      type: String,
+      enum: ["scheduled", "instant", "both"],
+      required: true,
+      default: "both",
+    },
     driver: {
       name: { type: String, required: true },
       contact: { type: String, required: true },
       licenseNumber: { type: String, required: true },
     },
+    location: {
+      type: { type: String, enum: ["Point"], default: "Point" },
+      coordinates: { type: [Number], default: [0, 0] }, // [longitude, latitude]
+    },
   },
+
   { timestamps: true }
 );
+
 
 const captainSchema = new mongoose.Schema(
   {

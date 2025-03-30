@@ -13,6 +13,7 @@ import Login_captain from "./components/login_page/Login_captain";
 import Sign_up_captains from "./components/Sign_up/Sign_up_captains";
 import Main_home from "./components/main_home/Home1";
 import CaptainDashboard from "./components/captain_dahboard/CaptainDashboard";
+import VehicleSearch from "./components/Book_vehicle/VehicleSearch";
 
 const RedirectToDashboard = () => {
   const navigate = useNavigate();
@@ -23,14 +24,16 @@ const RedirectToDashboard = () => {
 
     if (token) {
       if (role === "captain") {
-        navigate("/CaptainDashboard"); // Redirect captain
+        navigate("/CaptainDashboard");
       } else {
-        navigate("/Main_home"); // Redirect user
+        navigate("/Main_home");
       }
+    } else {
+      navigate("/home"); // Redirect to home if no token
     }
   }, [navigate]);
 
-  return null; // No need to render anything, just handle redirection
+  return null;
 };
 
 function App() {
@@ -38,15 +41,17 @@ function App() {
     <div className="App">
       <AuthProvider>
         <Router>
-          <RedirectToDashboard /> {/* Runs redirection logic on page load */}
           <Routes>
-            <Route exact path="/" element={<Home1 />} />
+            {/* Redirect only when accessing the root URL */}
+            <Route path="/" element={<RedirectToDashboard />} />
+            <Route path="/home" element={<Home1 />} />
             <Route path="/signup" element={<Sign_up />} />
             <Route path="/login" element={<Login />} />
             <Route path="/captain_login" element={<Login_captain />} />
             <Route path="/captain_sign_up" element={<Sign_up_captains />} />
-            <Route exact path="/Main_home" element={<Main_home />} />
+            <Route path="/Main_home" element={<Main_home />} />
             <Route path="/CaptainDashboard" element={<CaptainDashboard />} />
+            <Route path="/VehicleSearch" element={<VehicleSearch />} />
           </Routes>
         </Router>
       </AuthProvider>

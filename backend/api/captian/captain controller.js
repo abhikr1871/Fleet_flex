@@ -4,9 +4,7 @@ const Captain = require("./captain_model"); // Adjust path as needed
 
 // Generate JWT Token
 const generateToken = (id, username, email) => {
-  return jwt.sign({ id, username, email }, process.env.JWT_Secret, {
-    expiresIn: "1h",
-  });
+  return jwt.sign({ id, username, email }, process.env.JWT_Secret, );
 };
 
 // Captain Signup
@@ -199,15 +197,58 @@ const addVehicle = async (req, res) => {
   }
 };
 
+const delete_vehicle = async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+
+    // Using $pull to remove the vehicle with matching _id from the vehicles array
+    const result = await Captain.updateOne(
+      { _id: req.user.id }, // find the captain document
+      { $pull: { vehicles: { _id: vehicleId } } } // remove matching vehicle from array
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({
+        status: 0,
+        message: "Vehicle not found or not deleted",
+      });
+    }
+
+    res.status(200).json({
+      status: 1,
+      message: "Vehicle deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting vehicle:", error);
+    res.status(500).json({ status: 0, message: error.message });
+  }
+};
+
 // Update Vehicle Status (Go Live / Go Offline)
 const updateVehicleStatus = async (req, res) => {
   try {
     const { vehicleId } = req.params;
-    const { isLive } = req.body;
-    // Use an atomic update to modify just the vehicle's isLive field
+    const { isLive, latitude, longitude, bookingType } = req.body;
+
+    // Construct the update query
+    const updateQuery = { "vehicles.$.isLive": isLive };
+
+    // Add location if going live
+    if (isLive && latitude && longitude) {
+      updateQuery["vehicles.$.location"] = {
+        type: "Point",
+        coordinates: [longitude, latitude],
+      };
+      // Add booking type when going live
+      if (bookingType) {
+        updateQuery["vehicles.$.bookingType"] = bookingType;
+      }
+    }
+
+    // Update vehicle status, location, and booking type
     const result = await Captain.updateOne(
       { _id: req.user.id, "vehicles._id": vehicleId },
-      { $set: { "vehicles.$.isLive": isLive } },
+      { $set: updateQuery },
       { runValidators: true }
     );
 
@@ -217,13 +258,18 @@ const updateVehicleStatus = async (req, res) => {
         .json({ status: 0, message: "Vehicle not found or not updated" });
     }
 
-    console.log("Update Vehicle Status Request:", req.body);
-    const message = isLive ? "Vehicle is now live" : "Vehicle is now offline";
+    const message = isLive
+      ? `Vehicle is now live with ${bookingType} booking type and location updated`
+      : "Vehicle is now offline";
+
     res.status(200).json({ status: 1, message });
   } catch (error) {
+    console.error("Error updating vehicle status:", error);
     res.status(500).json({ status: 0, message: error.message });
   }
 };
+
+
 
 module.exports = {
   signup,
@@ -231,4 +277,5 @@ module.exports = {
   getVehicles,
   addVehicle,
   updateVehicleStatus,
+  delete_vehicle,
 };

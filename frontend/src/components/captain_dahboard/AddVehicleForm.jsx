@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import "./AddVehicleForm.css";
 
-const AddVehicleForm = ({ handleAddVehicle, handleInputChange, setShowForm }) => {
+const AddVehicleForm = ({
+  handleAddVehicle,
+  handleInputChange,
+  setShowForm,
+}) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -10,52 +15,208 @@ const AddVehicleForm = ({ handleAddVehicle, handleInputChange, setShowForm }) =>
     handleInputChange({ target: { name: "photo", value: file } });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    await handleAddVehicle(e);
+    setIsSubmitting(false);
+  };
+
   return (
-    <div className="add-vehicle-form">
-      <h3>Add New Vehicle</h3>
-      <form onSubmit={handleAddVehicle}>
-        <input type="text" name="name" placeholder="Vehicle Name" required onChange={handleInputChange} />
-        <input type="text" name="model" placeholder="Model" required onChange={handleInputChange} />
-        <input type="number" name="capacity" placeholder="Capacity (Passengers or Weight in Kg)" required onChange={handleInputChange} />
-        <input type="number" name="perKmRate" placeholder="Rate per Km" required onChange={handleInputChange} />
-        <input type="text" name="numberplate" placeholder="Number Plate" required onChange={handleInputChange} />
+    <div className="modal-overlay">
+      <div className="add-vehicle-form">
+        <h3>Add New Vehicle</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <input
+              type="text"
+              name="name"
+              placeholder=" "
+              required
+              onChange={handleInputChange}
+            />
+            <label>Vehicle Name</label>
+          </div>
 
-        <select name="type" required onChange={handleInputChange}>
-          <option value="">Select Type</option>
-          <option value="transport">Transport</option>
-          <option value="passenger travel">Passenger Travel</option>
-        </select>
+          <div className="input-group">
+            <input
+              type="text"
+              name="model"
+              placeholder=" "
+              required
+              onChange={handleInputChange}
+            />
+            <label>Model</label>
+          </div>
 
-        <select name="fuelType" required onChange={handleInputChange}>
-          <option value="">Select Fuel Type</option>
-          <option value="petrol">Petrol</option>
-          <option value="diesel">Diesel</option>
-          <option value="CNG">CNG</option>
-          <option value="electric">Electric</option>
-        </select>
+          <div className="input-group">
+            <input
+              type="number"
+              name="capacity"
+              placeholder=" "
+              required
+              onChange={handleInputChange}
+            />
+            <label>Capacity (Passengers)</label>
+          </div>
 
-        <input type="number" name="dimensions.length" placeholder="Length (m)" onChange={handleInputChange} />
-        <input type="number" name="dimensions.width" placeholder="Width (m)" onChange={handleInputChange} />
-        <input type="number" name="dimensions.height" placeholder="Height (m)" onChange={handleInputChange} />
-        <input type="number" name="weightCapacity" placeholder="Max Weight Capacity (Kg)" onChange={handleInputChange} />
+          <div className="input-group">
+            <input
+              type="number"
+              name="perKmRate"
+              placeholder=" "
+              required
+              onChange={handleInputChange}
+            />
+            <label>Rate per Km</label>
+          </div>
 
-        <label>
-          <input type="checkbox" name="acAvailable" onChange={handleInputChange} />
-          AC Available?
-        </label>
+          <div className="input-group">
+            <input
+              type="text"
+              name="numberplate"
+              placeholder=" "
+              required
+              onChange={handleInputChange}
+            />
+            <label>Number Plate</label>
+          </div>
 
-        <input type="file" accept="image/*" onChange={handleFileChange} required />
+          <div className="input-group">
+            <select name="type" required onChange={handleInputChange}>
+              <option value="">Select Type</option>
+              <option value="transport">Transport</option>
+              <option value="passenger travel">Passenger Travel</option>
+            </select>
+          </div>
 
-        {selectedImage && <img src={URL.createObjectURL(selectedImage)} alt="Preview" className="image-preview" />}
+          <div className="input-group">
+            <select name="fuelType" required onChange={handleInputChange}>
+              <option value="">Select Fuel Type</option>
+              <option value="petrol">Petrol</option>
+              <option value="diesel">Diesel</option>
+              <option value="CNG">CNG</option>
+              <option value="electric">Electric</option>
+            </select>
+          </div>
 
-        <input type="text" name="driver.name" placeholder="Driver Name" required onChange={handleInputChange} />
-        <input type="text" name="driver.contact" placeholder="Driver Contact" required onChange={handleInputChange} />
-        <input type="text" name="driver.licenseNumber" placeholder="Driver License Number" required onChange={handleInputChange} />
+          <div className="input-group">
+            <input
+              type="number"
+              name="dimensions.length"
+              placeholder=" "
+              onChange={handleInputChange}
+            />
+            <label>Length (m)</label>
+          </div>
 
-        <button type="submit">Add Vehicle</button>
-      </form>
+          <div className="input-group">
+            <input
+              type="number"
+              name="dimensions.width"
+              placeholder=" "
+              onChange={handleInputChange}
+            />
+            <label>Width (m)</label>
+          </div>
 
-      <button className="cancel-btn" onClick={() => setShowForm(false)}>Cancel</button>
+          <div className="input-group">
+            <input
+              type="number"
+              name="dimensions.height"
+              placeholder=" "
+              onChange={handleInputChange}
+            />
+            <label>Height (m)</label>
+          </div>
+
+          <div className="input-group">
+            <input
+              type="number"
+              name="weightCapacity"
+              placeholder=" "
+              onChange={handleInputChange}
+            />
+            <label>Max Weight Capacity (Kg)</label>
+          </div>
+
+          <div className="input-group checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                name="acAvailable"
+                onChange={handleInputChange}
+              />
+              AC Available
+            </label>
+          </div>
+
+          <div className="input-group file-input">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              required
+            />
+            {selectedImage && (
+              <img
+                src={URL.createObjectURL(selectedImage)}
+                alt="Preview"
+                className="image-preview"
+              />
+            )}
+          </div>
+
+          <div className="input-group">
+            <input
+              type="text"
+              name="driver.name"
+              placeholder=" "
+              required
+              onChange={handleInputChange}
+            />
+            <label>Driver Name</label>
+          </div>
+
+          <div className="input-group">
+            <input
+              type="text"
+              name="driver.contact"
+              placeholder=" "
+              required
+              onChange={handleInputChange}
+            />
+            <label>Driver Contact</label>
+          </div>
+
+          <div className="input-group">
+            <input
+              type="text"
+              name="driver.licenseNumber"
+              placeholder=" "
+              required
+              onChange={handleInputChange}
+            />
+            <label>Driver License Number</label>
+          </div>
+
+          <button
+            type="submit"
+            className={isSubmitting ? "loading" : ""}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Adding Vehicle..." : "Add Vehicle"}
+          </button>
+        </form>
+
+        <button
+          type="button"
+          className="cancel-btn"
+          onClick={() => setShowForm(false)}
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };

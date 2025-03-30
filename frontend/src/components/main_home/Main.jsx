@@ -17,7 +17,7 @@ function Main() {
           <div className="buttons2">
             <button
               className="book"
-              onClick={() => (window.location.href = "/book_vehicle")}
+              onClick={() => (window.location.href = "/VehicleSearch")}
             >
               Book Vehicle
             </button>

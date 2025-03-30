@@ -12,7 +12,8 @@ const CaptainDashboard = () => {
   const [vehicles, setVehicles] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+ const [showBookingTypeModal, setShowBookingTypeModal] = useState(false);
+ const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [vehicleData, setVehicleData] = useState({
     name: "",
     model: "",
@@ -54,42 +55,54 @@ const CaptainDashboard = () => {
     }
   }, [token]);
 
-  const handleGoLive = (vehicleId) => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-
-        try {
-          await api.updateVehicleStatus(
-            vehicleId,
-            { isLive: true, latitude, longitude },
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-
-          setVehicles((prevVehicles) =>
-            prevVehicles.map((vehicle) =>
-              vehicle._id === vehicleId
-                ? { ...vehicle, isLive: true, latitude, longitude }
-                : vehicle
-            )
-          );
-           alert(`Vehicle ${vehicleId} is now live!`);
-        } catch (error) {
-          console.error("Error updating vehicle location:", error);
-          alert("Failed to update vehicle location.");
-        }
-      },
-      (error) => {
-        console.error("Geolocation error:", error);
-        alert("Failed to get location. Please allow location access.");
-      }
-    );
+  const handleGoLiveClick = (vehicleId) => {
+    setSelectedVehicleId(vehicleId);
+    setShowBookingTypeModal(true);
   };
+   
+   const handleGoLive = (vehicleId, bookingType) => {
+     if (!navigator.geolocation) {
+       alert("Geolocation is not supported by your browser.");
+       return;
+     }
+
+     navigator.geolocation.getCurrentPosition(
+       async (position) => {
+         const { latitude, longitude } = position.coords;
+
+         try {
+           await api.updateVehicleStatus(
+             vehicleId,
+             { isLive: true, latitude, longitude, bookingType },
+             { headers: { Authorization: `Bearer ${token}` } }
+           );
+           setVehicles((prevVehicles) =>
+             prevVehicles.map((vehicle) =>
+               vehicle._id === vehicleId
+                 ? {
+                     ...vehicle,
+                     isLive: true,
+                     latitude,
+                     longitude,
+                     bookingType,
+                   }
+                 : vehicle
+             )
+           );
+           alert(
+             `Vehicle ${vehicleId} is now live with "${bookingType}" booking type!`
+           );
+         } catch (error) {
+           console.error("Error updating vehicle location:", error);
+           alert("Failed to update vehicle location.");
+         }
+       },
+       (error) => {
+         console.error("Geolocation error:", error);
+         alert("Failed to get location. Please allow location access.");
+       }
+     );
+   };
 
 
   const handleGoOffline = async (vehicleId) => {
@@ -259,7 +272,6 @@ const CaptainDashboard = () => {
           Logout
         </button>
       </div>
-
       {showForm && (
         <AddVehicleForm
           handleAddVehicle={handleAddVehicle}
@@ -267,7 +279,6 @@ const CaptainDashboard = () => {
           setShowForm={setShowForm}
         />
       )}
-
       <h3 className="live-nonlive">Live Vehicles</h3>
       <div className="vehicles-list">
         {liveVehicles.length > 0 ? (
@@ -283,7 +294,6 @@ const CaptainDashboard = () => {
           <p>No live vehicles.</p>
         )}
       </div>
-
       <h3 className="live-nonlive">Non-Live Vehicles</h3>
       <div className="vehicles-list">
         {nonLiveVehicles.length > 0 ? (
@@ -291,7 +301,7 @@ const CaptainDashboard = () => {
             <VehicleCard
               key={vehicle._id}
               vehicle={vehicle}
-              handleGoLive={handleGoLive}
+              handleGoLive={handleGoLiveClick}
               handleDeleteVehicle={handleDeleteVehicle}
             />
           ))
@@ -299,13 +309,56 @@ const CaptainDashboard = () => {
           <p>No non-live vehicles.</p>
         )}
       </div>
-
       <button
         className="add-vehicle-btn"
         onClick={() => setShowForm(!showForm)}
       >
         Add Vehicle
       </button>
+      {/* Booking Type Modal */}
+      {showBookingTypeModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Select Booking Type</h3>
+            <button
+              className="modal-btn instant"
+              onClick={() => {
+                handleGoLive(selectedVehicleId, "instant");
+                setShowBookingTypeModal(false);
+              }}
+            >
+              Instant
+            </button>
+            <button
+              className="modal-btn scheduled"
+              onClick={() => {
+                handleGoLive(selectedVehicleId, "scheduled");
+                setShowBookingTypeModal(false);
+              }}
+            >
+              Scheduled
+            </button>
+            <button
+              className="modal-btn both"
+              onClick={() => {
+                handleGoLive(selectedVehicleId, "both");
+                setShowBookingTypeModal(false);
+              }}
+            >
+              Both
+            </button>
+            <button
+              className="modal-close"
+              onClick={() => {
+                setShowBookingTypeModal(false);
+                setSelectedVehicleId(null);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
