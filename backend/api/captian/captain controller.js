@@ -99,13 +99,11 @@ const getVehicles = async (req, res) => {
 // Add Vehicle
 const addVehicle = async (req, res) => {
   try {
-    // Verify that the captain exists
     const captain = await Captain.findById(req.user.id);
     if (!captain) {
       return res.status(404).json({ status: 0, message: "Captain not found" });
     }
 
-    // Extract flat keys from req.body
     const {
       name,
       model,
@@ -118,7 +116,6 @@ const addVehicle = async (req, res) => {
       acAvailable,
     } = req.body;
 
-    // Reconstruct dimensions and driver objects from flat keys
     const dimensions = {
       length: req.body["dimensions.length"] || 0,
       width: req.body["dimensions.width"] || 0,
@@ -131,7 +128,6 @@ const addVehicle = async (req, res) => {
       licenseNumber: req.body["driver.licenseNumber"],
     };
 
-    // Validate required fields for the new vehicle only
     if (
       !name ||
       !model ||
@@ -149,17 +145,18 @@ const addVehicle = async (req, res) => {
         .json({ status: 0, message: "Missing required fields" });
     }
 
-    console.log(
-      "Request Driver Details:",
-      driver.name,
-      driver.contact,
-      driver.licenseNumber
-    );
+    console.log("Driver Details:", driver);
 
-    // Check if a file was uploaded
-    const photograph = req.file ? `/uploads/${req.file.filename}` : null;
+    // Check if file exists and get S3 URL
+    // let photograph = req.file ? req.file.location : null;
+    // console.log("Uploaded Image URL:", photograph);
 
-    // Create the new vehicle object
+    let photograph = req.file ? req.file.location : null;
+    if (!photograph) {
+    return res.status(400).json({ status: 0, message: "Image upload failed" });
+    }
+
+
     const newVehicle = {
       name,
       model,
@@ -170,21 +167,17 @@ const addVehicle = async (req, res) => {
       fuelType,
       weightCapacity: weightCapacity || 0,
       acAvailable: acAvailable || false,
-      photo: photograph,
+      photo: photograph, // Save S3 URL instead of local file path
       isLive: false,
       dimensions,
       driver,
     };
 
-    // Instead of pushing and then saving (which revalidates all vehicles),
-    // use an atomic update so only the new vehicle is validated.
     await Captain.updateOne(
       { _id: req.user.id },
       { $push: { vehicles: newVehicle } },
       { runValidators: true }
     );
-
-    console.log("New Vehicle:", newVehicle);
 
     res.status(200).json({
       status: 1,
