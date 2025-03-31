@@ -7,10 +7,9 @@ const VehicleCard = ({
   handleGoOffline,
   handleDeleteVehicle,
 }) => {
-  const backendURL = "http://localhost:4000";
-  const imageUrl = vehicle.photo
-    ? `${backendURL}${vehicle.photo}` // Directly append the stored path
-    : "/default-image.jpg";
+  const imageUrl = vehicle.photo?.startsWith("http")
+    ? vehicle.photo
+    : `http://localhost:4000${vehicle.photo}`;
 
   console.log("Vehicle Photo URL:", imageUrl);
 
@@ -18,7 +17,7 @@ const VehicleCard = ({
     <div className="vehicle-card">
       {/* Vehicle Image */}
       {vehicle.photo && (
-        <img src={imageUrl} alt={vehicle.photo} className="vehicle-image" />
+        <img src={imageUrl} alt="Vehicle" className="vehicle-image" />
       )}
 
       {/* Vehicle Details */}
