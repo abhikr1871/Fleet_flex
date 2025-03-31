@@ -13,7 +13,7 @@ const auth = (req, res, next) => {
 
   try {
     // Verify the token using the JWT secret
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded =  jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // Attach decoded payload (user info) to the request object
 
     console.log('Authenticated User:', req.user); // Log decoded token for debugging

@@ -66,7 +66,7 @@ const login = async (req, res) => {
     if (captain && (await bcrypt.compare(password, captain.password))) {
       const resp_data = {
         _id: captain._id,
-        captain_id: captain.captain_id,
+       // captain_id: captain.captain_id,
         username: captain.username,
         email: captain.email,
         vehicle: captain.vehicle, // Return vehicle details if available
