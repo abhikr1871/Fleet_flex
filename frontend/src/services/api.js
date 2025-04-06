@@ -37,6 +37,8 @@ export const updateVehicleStatus = (vehicleId, statusData) =>
 export const delete_vehicle = (vehicleId, statusData) =>
   API.patch(`/captain/delete_vehicle/${vehicleId}`, statusData);
 
+export const search_vehicles = (searchQuery) =>
+  API.post(`/captain/search_vehicles`, searchQuery);
 export default {
   signup,
   login,
@@ -46,4 +48,5 @@ export default {
   addCaptainVehicle,
   updateVehicleStatus,
   delete_vehicle,
+  search_vehicles,
 };

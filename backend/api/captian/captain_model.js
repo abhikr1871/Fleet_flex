@@ -10,7 +10,7 @@ const vehicleSchema = new mongoose.Schema(
     numberplate: { type: String, required: true, unique: true },
     type: {
       type: String,
-      enum: ["transport", "passenger travel"],
+      enum: ["Car","Truck","Mini-Truck","Traveler","Bus"],
       required: true,
     },
     fuelType: {

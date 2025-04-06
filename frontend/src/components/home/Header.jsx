@@ -1,47 +1,27 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  FaInstagram,
+  FaLinkedin,
+  FaTwitter,
+  FaHome,
+  FaSignOutAlt,
+  FaEnvelope,
+} from "react-icons/fa";
 import "./Header.css";
-import { useAuthContext } from "../../context/AuthContext"; // Import useAuthContext
+import { useAuthContext } from "../../context/AuthContext";
 
 const Header = () => {
-  const { logout } = useAuthContext(); // Access logout function from context
+  const { logout } = useAuthContext();
+  const navigate = useNavigate();
 
   return (
-    <header>
-      <div className="logo">FleetFlex</div>
-      <nav>
-        <ul>
-          <li>
-            <a href="https://www.instagram.com/_aditya_pwr/">
-              <img src="./icons/instagram.svg" alt="Instagram" />
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <img src="/icons/linkedin.svg" alt="LinkedIn" />
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <img src="/icons/x-icon.svg" alt="X (Twitter)" />
-            </a>
-          </li>
-          <li>
-            <a href="#" className="home-button">
-              Home
-            </a>
-          </li>
-          <li>
-            <button onClick={logout} className="homebutton">
-              Logout
-            </button>
-          </li>
-          <li>
-            <a href="#" className="contact-button">
-              Contact us
-            </a>
-          </li>
-        </ul>
-      </nav>
+    <header className="header">
+      <div className="header-container">
+        <div className="logo">
+          <h1>FleetFlex</h1>
+        </div>
+      </div>
     </header>
   );
 };

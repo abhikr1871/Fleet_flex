@@ -1,12 +1,167 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaMapMarkerAlt, FaCalendarAlt, FaCar, FaUsers, FaWeight, FaSort } from "react-icons/fa";
+import {
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaCar,
+  FaUsers,
+  FaWeight,
+  FaSort,
+} from "react-icons/fa" ;
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import "./VehicleSearch.css";
+import api from "../../services/api";
+
+
+// Fix Leaflet's default icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl: require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+});
+
+const LocationInput = ({
+  value,
+  onChange,
+  onSelectLocation,
+  placeholder,
+  label,
+  required,
+}) => {
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const searchLocation = async (query) => {
+    if (!query.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          query
+        )}&countrycodes=in`
+      );
+      const data = await response.json();
+      setSuggestions(data);
+    } catch (error) {
+      console.error("Search failed:", error);
+      setSuggestions([]);
+    }
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      searchLocation(value);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [value]);
+
+  return (
+    <div className="input-group">
+      <div className="input-icon">
+        <FaMapMarkerAlt />
+      </div>
+      <div className="search-container">
+        <input
+          type="text"
+          className="input-field"
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setShowSuggestions(true)}
+          required={required}
+        />
+        {showSuggestions && suggestions.length > 0 && (
+          <ul className="suggestions-list">
+            {suggestions.map((item) => (
+              <li
+                key={item.place_id}
+                onClick={() => {
+                  onChange(item.display_name);
+                  onSelectLocation({
+                    address: item.display_name,
+                    coordinates: {
+                      lat: parseFloat(item.lat),
+                      lng: parseFloat(item.lon),
+                    },
+                  });
+                  setShowSuggestions(false);
+                }}
+              >
+                {item.display_name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <label className="floating-label">{label}</label>
+    </div>
+  );
+};
+
+const MapModal = ({ isOpen, onClose, onSelectLocation, initialLocation }) => {
+  const [marker, setMarker] = useState(initialLocation);
+  const defaultCenter = [20.5937, 78.9629]; // India's center
+
+  const MapEvents = () => {
+    useMapEvents({
+      click(e) {
+        const { lat, lng } = e.latlng;
+        setMarker({ lat, lng });
+      },
+    });
+    return null;
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="map-modal">
+      <div className="map-container">
+        <MapContainer
+          center={
+            initialLocation
+              ? [initialLocation.lat, initialLocation.lng]
+              : defaultCenter
+          }
+          zoom={13}
+          style={{ width: "100%", height: "100%" }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <MapEvents />
+          {marker && <Marker position={[marker.lat, marker.lng]} />}
+        </MapContainer>
+        <div className="map-controls">
+          <button
+            className="map-button confirm"
+            onClick={() => marker && onSelectLocation(marker)}
+          >
+            Confirm Location
+          </button>
+          <button className="map-button cancel" onClick={onClose}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const VehicleSearch = () => {
+  // ... your existing state variables ...
   const navigate = useNavigate();
   const [isSearching, setIsSearching] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [activeLocation, setActiveLocation] = useState(null);
   const [bookingType, setBookingType] = useState("instant");
   const [pickup, setPickup] = useState("");
   const [drop, setDrop] = useState("");
@@ -15,29 +170,138 @@ const VehicleSearch = () => {
   const [passengerCapacity, setPassengerCapacity] = useState(1);
   const [loadCapacity, setLoadCapacity] = useState("");
   const [sortBy, setSortBy] = useState("price");
+  const [locations, setLocations] = useState({
+    pickup: { address: "", coordinates: null },
+    drop: { address: "", coordinates: null },
+  });
+  const [routeInfo, setRouteInfo] = useState({
+    distance: null,
+    duration: null,
+  });
+  const [vehicles,setVehicles] = useState([]);
+
+  const token = localStorage.getItem("token");
+  // Add this function inside VehicleSearch component
+  const calculateRouteDistance = async (start, end) => {
+    try {
+      const response = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`
+      );
+      const data = await response.json();
+
+      if (data.routes && data.routes[0]) {
+        const distanceInKm = (data.routes[0].distance / 1000).toFixed(2);
+        const durationInMinutes = Math.round(data.routes[0].duration / 60);
+        setRouteInfo({
+          distance: distanceInKm,
+          duration: durationInMinutes,
+        });
+        return distanceInKm;
+      }
+      return null;
+    } catch (error) {
+      console.error("Failed to calculate route:", error);
+      return null;
+    }
+  };
+
+  const handleLocationSelect = async (type, location) => {
+    if (type === "pickup") {
+      setPickup(location.address);
+      setLocations((prev) => ({
+        ...prev,
+        pickup: location,
+      }));
+
+        if (locations.drop.coordinates) {
+      await calculateRouteDistance(location.coordinates, locations.drop.coordinates);
+    }
+
+    } else {
+      setDrop(location.address);
+      setLocations((prev) => ({
+        ...prev,
+        drop: location,
+      }));
+       if (locations.pickup.coordinates) {
+      await calculateRouteDistance(locations.pickup.coordinates, location.coordinates);
+    }
+    }
+  };
+
+  const handleMapSelect = async (coordinates) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coordinates.lat}&lon=${coordinates.lng}`
+      );
+      const data = await response.json();
+      handleLocationSelect(activeLocation, {
+        address: data.display_name,
+        coordinates,
+      });
+      setShowMap(false);
+    } catch (error) {
+      console.error("Reverse geocoding failed:", error);
+    }
+  };
 
   const handleSearch = async () => {
-    if (!pickup) {
-      alert("Please enter pickup location");
+    if (!locations.pickup.coordinates) {
+      alert("Please select a pickup location");
       return;
     }
-    
+
     setIsSearching(true);
     try {
+      let distance = null;
+      if (locations.drop.coordinates) {
+        // Recalculate distance just before search
+        distance = await calculateRouteDistance(
+          locations.pickup.coordinates,
+          locations.drop.coordinates
+        );
+      }
+
       const searchParams = {
-        pickup,
-        drop,
+        pickup: locations.pickup,
+        drop: locations.drop,
         bookingType,
         date: bookingType === "scheduled" ? date : null,
         vehicleCategory,
-        passengerCapacity,
-        loadCapacity,
+        passengerCapacity: parseInt(passengerCapacity),
+        loadCapacity: loadCapacity ? parseInt(loadCapacity) : null,
         sortBy,
+        distance,
+        searchRadius: 10,
       };
-      console.log("Searching with params:", searchParams);
-      // Add API call here
+
+      // Make API call with search parameters
+      const response = await api.search_vehicles(searchParams, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data && response.data.data) {
+        setVehicles(response.data.data);
+        // Navigate to results page or handle the vehicles data
+        navigate("/search-results", {
+          state: {
+            vehicles: response.data.data,
+            searchParams,
+            routeInfo,
+          },
+        });
+      } else {
+        throw new Error("No vehicles data received");
+      }
     } catch (error) {
       console.error("Search failed:", error);
+      alert(
+        error.response?.data?.message ||
+          "Failed to search vehicles. Please try again."
+      );
     } finally {
       setIsSearching(false);
     }
@@ -47,33 +311,48 @@ const VehicleSearch = () => {
     <div className="vehicle-search-container">
       <h2 className="vehicle-search-title">Find Your Perfect Ride</h2>
       <div className="search-form">
-        <div className="input-group">
-          <div className="input-icon">
-            <FaMapMarkerAlt />
-          </div>
-          <input
-            type="text"
-            className="input-field"
-            placeholder="Enter pickup location"
+        <div className="location-input-group">
+          <h6 className="drop">pickup loaction</h6>
+          <LocationInput
             value={pickup}
-            onChange={(e) => setPickup(e.target.value)}
-            required
+            onChange={setPickup}
+            onSelectLocation={(location) =>
+              handleLocationSelect("pickup", location)
+            }
+            placeholder="Enter pickup location"
+            required={true}
           />
-          <label className="floating-label">Pickup Location</label>
+          <button
+            className="map-select-button"
+            onClick={() => {
+              setActiveLocation("pickup");
+              setShowMap(true);
+            }}
+          >
+            Select on Map
+          </button>
         </div>
 
-        <div className="input-group">
-          <div className="input-icon">
-            <FaMapMarkerAlt />
-          </div>
-          <input
-            type="text"
-            className="input-field"
-            placeholder="Enter drop location (optional)"
+        <div className="location-input-group">
+          <h6 className="drop">drop loaction</h6>
+          <LocationInput
             value={drop}
-            onChange={(e) => setDrop(e.target.value)}
+            onChange={setDrop}
+            onSelectLocation={(location) =>
+              handleLocationSelect("drop", location)
+            }
+            placeholder="Enter drop location (optional)"
+            required={false}
           />
-          <label className="floating-label">Drop Location</label>
+          <button
+            className="map-select-button"
+            onClick={() => {
+              setActiveLocation("drop");
+              setShowMap(true);
+            }}
+          >
+            Select on Map
+          </button>
         </div>
 
         <div className="booking-type-group">
@@ -179,17 +458,24 @@ const VehicleSearch = () => {
         </div>
 
         <div className="button-group">
-          <button 
-            onClick={handleSearch} 
-            className={`search-button ${isSearching ? 'loading' : ''}`}
+          <button
+            onClick={handleSearch}
+            className={`search-button ${isSearching ? "loading" : ""}`}
             disabled={isSearching}
           >
-            {isSearching ? 'Searching...' : 'Search Vehicles'}
+            {isSearching ? "Searching..." : "Search Vehicles"}
           </button>
-          <button onClick={() => navigate('/')} className="cancel-button">
+          <button onClick={() => navigate("/")} className="cancel-button">
             Cancel
           </button>
         </div>
+
+        <MapModal
+          isOpen={showMap}
+          onClose={() => setShowMap(false)}
+          onSelectLocation={handleMapSelect}
+          initialLocation={locations[activeLocation]?.coordinates}
+        />
       </div>
     </div>
   );
