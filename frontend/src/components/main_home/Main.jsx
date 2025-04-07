@@ -1,7 +1,8 @@
 import React from "react";
 import "./Main.css"; // Import CSS
-
+import { useNavigate } from "react-router-dom";
 function Main() {
+    const navigate = useNavigate();
   return (
     <main className="main">
       <div className="main-container">
@@ -15,10 +16,7 @@ function Main() {
             experience!"
           </p>
           <div className="buttons2">
-            <button
-              className="book"
-              onClick={() => (window.location.href = "/VehicleSearch")}
-            >
+            <button className="book" onClick={() => navigate("/VehicleSearch")}>
               Book Vehicle
             </button>
           </div>

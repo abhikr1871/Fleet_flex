@@ -1,13 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FaInstagram,
-  FaLinkedin,
-  FaTwitter,
-  FaHome,
-  FaSignOutAlt,
-  FaEnvelope,
-} from "react-icons/fa";
 import "./Header.css";
 import { useAuthContext } from "../../context/AuthContext";
 

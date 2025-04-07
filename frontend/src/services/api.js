@@ -39,11 +39,28 @@ export const delete_vehicle = (vehicleId, statusData) =>
 
 export const search_vehicles = (searchQuery) =>
   API.post(`/captain/search_vehicles`, searchQuery);
+
+
+export const getProfile = () => API.get("/users/profile");
+export const updateProfileImage = (imageData) =>
+  API.post("/users/update-profile-image", imageData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+export const updateUsername = (usernameData) =>
+  API.put("/users/update-username", usernameData);
+
+
 export default {
+  // Auth exports
   signup,
   login,
   signup2,
   login2,
+  // Profile exports
+  getProfile,
+  updateProfileImage,
+  updateUsername,
+  // Vehicle exports
   getCaptainVehicles,
   addCaptainVehicle,
   updateVehicleStatus,

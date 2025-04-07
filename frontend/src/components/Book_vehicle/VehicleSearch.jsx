@@ -33,7 +33,7 @@ const LocationInput = ({
 }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-
+  
   const searchLocation = async (query) => {
     if (!query.trim()) {
       setSuggestions([]);

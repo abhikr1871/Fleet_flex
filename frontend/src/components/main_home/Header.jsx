@@ -63,7 +63,7 @@ const Header = () => {
                 <FaCheckCircle />
                 <span>Completed Rides</span>
               </li>
-              <li onClick={() => navigate("/profile")}>
+              <li onClick={() => navigate("/User_profile")}>
                 <FaUser />
                 <span>Profile</span>
               </li>

@@ -13,7 +13,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/Main_home", { replace: true });
+      navigate("/Main_home");
     }
   }, [isAuthenticated, navigate]);
 
@@ -34,7 +34,6 @@ const Login = () => {
         setIsAuthenticated(true);
         setEmail("");
         setPassword("");
-        navigate('/home');
       } else {
         window.alert("Token not received. Please try again.");
       }
@@ -49,10 +48,7 @@ const Login = () => {
       <div className="login-container">
         <div className="heading">
           <h2>FleetFlex</h2>
-          <button
-            className="close_btn"
-            onClick={() => (window.location.href = "/")}
-          >
+          <button className="close_btn" onClick={() => navigate("/")}>
             Close
           </button>
         </div>
@@ -102,7 +98,7 @@ const Login = () => {
 
         <button
           className="login-btn captain-login"
-          onClick={() => (window.location.href = "/captain_login")}
+          onClick={() => navigate("/captain_login")}
         >
           Log in As Captain
         </button>
