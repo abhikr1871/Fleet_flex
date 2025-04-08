@@ -4,7 +4,7 @@ const Captain = require("./captain_model"); // Adjust path as needed
 
 // Generate JWT Token
 const generateToken = (id, username, email) => {
-  return jwt.sign({ id, username, email }, process.env.JWT_Secret, );
+  return jwt.sign({ id, username, email }, process.env.JWT_Secret);
 };
 
 // Captain Signup
@@ -66,7 +66,7 @@ const login = async (req, res) => {
     if (captain && (await bcrypt.compare(password, captain.password))) {
       const resp_data = {
         _id: captain._id,
-       // captain_id: captain.captain_id,
+        // captain_id: captain.captain_id,
         username: captain.username,
         email: captain.email,
         vehicle: captain.vehicle, // Return vehicle details if available
@@ -153,9 +153,10 @@ const addVehicle = async (req, res) => {
 
     let photograph = req.file ? req.file.location : null;
     if (!photograph) {
-    return res.status(400).json({ status: 0, message: "Image upload failed" });
+      return res
+        .status(400)
+        .json({ status: 0, message: "Image upload failed" });
     }
-
 
     const newVehicle = {
       name,
@@ -262,7 +263,121 @@ const updateVehicleStatus = async (req, res) => {
   }
 };
 
+const getCaptainProfile = async (req, res) => {
+  const result = {
+    status: 0,
+    message: "Profile fetched successfully",
+    data: {},
+  };
 
+  try {
+    const captain = await Captain.findById(req.user.id).select("-password");
+
+    if (!captain) {
+      result.message = "Captain not found";
+      return res.status(404).json(result);
+    }
+
+    result.status = 1;
+    result.data = {
+      _id: captain._id,
+      captain_id: captain.captain_id,
+      username: captain.username,
+      email: captain.email,
+      profileImage:
+        captain.profileImage ||
+        "https://dummyimage.com/150x150/cccccc/000000&text=No+Image",
+    };
+
+    res.status(200).json(result);
+  } catch (error) {
+    result.message = error.message;
+    res.status(500).json(result);
+  }
+};
+
+const updateCaptainUsername = async (req, res) => {
+  const result = {
+    status: 0,
+    message: "Username updated successfully",
+    data: {},
+  };
+
+  try {
+    const captainId = req.user.id;
+
+    const captain = await Captain.findById(captainId).select("-password");
+
+    if (!captain) {
+      result.message = "Captain not found";
+      return res.status(404).json(result);
+    }
+
+    // Update the username
+    captain.username = req.body.username;
+    await captain.save();
+
+    result.status = 1;
+    result.data = {
+      _id: captain._id,
+      username: captain.username,
+      email: captain.email,
+      profileImage:
+        captain.profileImage ||
+        "https://dummyimage.com/150x150/cccccc/000000&text=No+Image",
+    };
+
+    res.status(200).json(result);
+  } catch (error) {
+    result.message = error.message;
+    res.status(500).json(result);
+  }
+};
+
+const updateCaptainProfileImage = async (req, res) => {
+  try {
+    const photograph = req.file ? req.file.location : null;
+
+    if (!photograph) {
+      return res.status(400).json({
+        status: 0,
+        message: "Image upload failed",
+      });
+    }
+
+    console.log("Uploaded Profile Image URL:", photograph);
+
+    const captain = await Captain.findByIdAndUpdate(
+      req.user.id,
+      { profileImage: photograph },
+      { new: true }
+    ).select("-password");
+
+    if (!captain) {
+      return res.status(404).json({
+        status: 0,
+        message: "Captain not found",
+      });
+    }
+
+    res.status(200).json({
+      status: 1,
+      message: "Profile image updated successfully",
+      data: {
+        _id: captain._id,
+        username: captain.username,
+        email: captain.email,
+        profileImage: captain.profileImage,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating profile image:", error);
+    res.status(500).json({
+      status: 0,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   signup,
@@ -271,4 +386,7 @@ module.exports = {
   addVehicle,
   updateVehicleStatus,
   delete_vehicle,
+  getCaptainProfile,
+  updateCaptainUsername,
+  updateCaptainProfileImage,
 };

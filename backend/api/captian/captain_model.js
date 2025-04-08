@@ -10,7 +10,7 @@ const vehicleSchema = new mongoose.Schema(
     numberplate: { type: String, required: true, unique: true },
     type: {
       type: String,
-      enum: ["Car","Truck","Mini-Truck","Traveler","Bus"],
+      enum: ["Car", "Truck", "Mini-Truck", "Traveler", "Bus"],
       required: true,
     },
     fuelType: {
@@ -43,16 +43,18 @@ const vehicleSchema = new mongoose.Schema(
       coordinates: { type: [Number], default: [0, 0] }, // [longitude, latitude]
     },
   },
-
   { timestamps: true }
 );
-
 
 const captainSchema = new mongoose.Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    profileImage: {
+      type: String,
+      default: null, // Default value for profile image
+    },
     vehicles: [vehicleSchema],
     createdAt: { type: Date, default: Date.now },
   },

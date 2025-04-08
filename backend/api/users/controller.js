@@ -2,14 +2,12 @@ const User = require("./model.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-// Function to generate JWT token
 const generateToken = (id, username, email) => {
   return jwt.sign({ id, username, email }, process.env.JWT_Secret, {
     expiresIn: "1h",
   });
 };
 
-// Signup function
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -30,12 +28,10 @@ const signup = async (req, res) => {
     const userCount = await User.countDocuments();
     const userId = userCount + 1;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await User.create({
       username,
       email,
-      password: hashedPassword,
+      password,
       user_id: userId,
     });
 
@@ -56,7 +52,6 @@ const signup = async (req, res) => {
   }
 };
 
-// Login function
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -91,100 +86,124 @@ const login = async (req, res) => {
   }
 };
 
-// Get Profile function
 const getProfile = async (req, res) => {
+  const result = {
+    status: 0,
+    message: "Profile fetched successfully",
+    data: {},
+  };
+
   try {
     const user = await User.findById(req.user.id).select("-password");
+
     if (!user) {
-      return res.status(404).json({
-        status: 0,
-        message: "User not found",
-      });
+      result.message = "User not found";
+      return res.status(404).json(result);
     }
-    res.json({
-      status: 1,
-      data: user,
-    });
+
+    result.status = 1;
+    result.data = {
+      _id: user._id,
+      user_id: user.user_id,
+      username: user.username,
+      email: user.email,
+      profileImage:
+        user.profileImage ||
+        "https://dummyimage.com/150x150/cccccc/000000&text=No+Image",
+    };
+
+    res.status(200).json(result);
   } catch (error) {
-    console.error("Error in getProfile:", error);
-    res.status(500).json({
-      status: 0,
-      message: "Server error while fetching profile",
-    });
+    result.message = error.message;
+    res.status(500).json(result);
   }
 };
 
-// Update Username function
 const updateUsername = async (req, res) => {
+  const result = {
+    status: 0,
+    message: "Username updated successfully",
+    data: {},
+  };
+
   try {
-    const { username } = req.body;
-    if (!username) {
-      return res.status(400).json({
-        status: 0,
-        message: "Username is required",
-      });
+    // Replace the hardcoded user ID with the desired ID
+    const userId = req.user._id;
+
+    // Find the user by ID
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      result.message = "User not found";
+      return res.status(404).json(result);
     }
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { username },
-      { new: true }
-    ).select("-password");
+    // Populate the response with user data
+    result.status = 1;
+    result.data = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      profileImage:
+        user.profileImage ||
+        "https://dummyimage.com/150x150/cccccc/000000&text=No+Image",
+    };
 
-    res.json({
-      status: 1,
-      message: "Username updated successfully",
-      data: user,
-    });
+    res.status(200).json(result);
   } catch (error) {
-    console.error("Error in updateUsername:", error);
-    res.status(500).json({
-      status: 0,
-      message: "Server error while updating username",
-    });
+    result.message = error.message;
+    res.status(500).json(result);
   }
 };
 
-// Update Profile Image function
 const updateProfileImage = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({
-        status: 0,
-        message: "User not found",
-      });
-    }
+    // Check if file is uploaded
+    const photograph = req.file ? req.file.location : null;
 
-    // Check if file exists and get S3 URL
-    let profileImage = req.file ? req.file.location : null;
-    if (!profileImage) {
+    if (!photograph) {
       return res.status(400).json({
         status: 0,
         message: "Image upload failed",
       });
     }
 
-    // Update user with new profile image
-    const updatedUser = await User.findByIdAndUpdate(
+    console.log("Uploaded Profile Image URL:", photograph);
+
+    // Update user profile image
+    const user = await User.findByIdAndUpdate(
       req.user.id,
-      { profileImage: profileImage },
+      { profileImage: photograph }, // <-- Make sure field matches your schema (profileImage)
       { new: true }
     ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        status: 0,
+        message: "User not found",
+      });
+    }
 
     res.status(200).json({
       status: 1,
       message: "Profile image updated successfully",
-      data: updatedUser,
+      data: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage, // <- Consistent key
+      },
     });
   } catch (error) {
     console.error("Error updating profile image:", error);
     res.status(500).json({
       status: 0,
-      message: "Server error while updating profile image",
+      message: error.message,
     });
   }
 };
+
+
 
 module.exports = {
   signup,
