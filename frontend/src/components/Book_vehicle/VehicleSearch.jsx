@@ -253,29 +253,21 @@ const VehicleSearch = () => {
 
     setIsSearching(true);
     try {
-      let distance = null;
-      if (locations.drop.coordinates) {
-        // Recalculate distance just before search
-        distance = await calculateRouteDistance(
-          locations.pickup.coordinates,
-          locations.drop.coordinates
-        );
-      }
-
       const searchParams = {
         pickup: locations.pickup,
         drop: locations.drop,
         bookingType,
         date: bookingType === "scheduled" ? date : null,
         vehicleCategory,
-        passengerCapacity: parseInt(passengerCapacity),
+        passengerCapacity: parseInt(passengerCapacity) || 1,
         loadCapacity: loadCapacity ? parseInt(loadCapacity) : null,
         sortBy,
-        distance,
-        searchRadius: 10,
+        distance: routeInfo.distance,
+        searchRadius: 10, // Radius in kilometers
       };
 
-      // Make API call with search parameters
+      console.log("Search Params:", searchParams);
+
       const response = await api.search_vehicles(searchParams, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -285,7 +277,6 @@ const VehicleSearch = () => {
 
       if (response.data && response.data.data) {
         setVehicles(response.data.data);
-        // Navigate to results page or handle the vehicles data
         navigate("/search-results", {
           state: {
             vehicles: response.data.data,
