@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaCamera, FaEdit } from "react-icons/fa";
 import api from "../../services/api";
-import "./User.css";
 
 const UserProfile = () => {
   const [isEditingName, setIsEditingName] = useState(false);
@@ -17,12 +16,13 @@ const UserProfile = () => {
 
   useEffect(() => {
     fetchUserProfile();
-  }, []);
+  }, [isSubmitting]);
 
   const fetchUserProfile = async () => {
     try {
       setIsLoading(true);
       const response = await api.getProfile();
+      console.log(response.data.data); // Debug API response
       if (response.data.status === 1) {
         setUserData(response.data.data);
         setSelectedImage(response.data.data.profileImage);
@@ -51,13 +51,13 @@ const UserProfile = () => {
         formData.append("profileImage", file);
 
         const response = await api.updateProfileImage(formData);
-        
+
         if (response.data.status === 1) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setSelectedImage(reader.result);
-          };
-          reader.readAsDataURL(file);
+          setUserData((prevData) => ({
+            ...prevData,
+            profileImage: response.data.data.profileImage,
+          }));
+          setSelectedImage(response.data.data.profileImage);
         } else {
           alert(response.data.message || "Failed to update profile image");
         }
@@ -79,11 +79,19 @@ const UserProfile = () => {
 
     try {
       setIsSubmitting(true);
-      const response = await api.updateUsername({ username: userData.username });
-      
+      const response = await api.updateUsername({
+        username: userData.username,
+      });
+
       if (response.data.status === 1) {
         setIsEditingName(false);
         setUserData(response.data.data);
+
+        // Remove the old username from local storage
+        localStorage.removeItem("username");
+
+        // Update local storage with the new username
+        localStorage.setItem("username", response.data.data.username);
       } else {
         alert(response.data.message || "Failed to update username");
       }

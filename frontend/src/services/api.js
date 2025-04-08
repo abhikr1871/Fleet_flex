@@ -49,6 +49,13 @@ export const updateProfileImage = (imageData) =>
 export const updateUsername = (usernameData) =>
   API.put("/users/update-username", usernameData);
 
+export const getCaptainProfile = () => API.get("/captain/profile");
+export const updateCaptainProfileImage = (imageData) =>
+  API.post("/captain/update-profile-image", imageData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+export const updateCaptainUsername = (usernameData) =>
+  API.put("/captain/update-username", usernameData);
 
 export default {
   // Auth exports
@@ -66,4 +73,8 @@ export default {
   updateVehicleStatus,
   delete_vehicle,
   search_vehicles,
+
+  getCaptainProfile,
+  updateCaptainProfileImage,
+  updateCaptainUsername,
 };

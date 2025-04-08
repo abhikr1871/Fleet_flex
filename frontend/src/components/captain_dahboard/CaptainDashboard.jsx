@@ -263,7 +263,7 @@ const CaptainDashboard = () => {
     },
     { icon: <FaMoneyBillWave />, text: "Earnings", path: "/earnings" },
     { icon: <FaComments />, text: "Messages", path: "/chats" },
-    { icon: <FaUser />, text: "Profile", path: "/profile" },
+    { icon: <FaUser />, text: "Profile", path: "/captain_profile" },
   ];
 
   return (
