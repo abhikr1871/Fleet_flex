@@ -11,6 +11,7 @@ const {
   getCaptainProfile,
   updateCaptainUsername,
   updateCaptainProfileImage,
+  searchVehicles,
 } = require("./captain controller");
 
 const router = express.Router();
@@ -34,5 +35,6 @@ router.post(
   upload.single("profileImage"), // Middleware for handling file uploads
   updateCaptainProfileImage
 ); // Update captain profile image
+router.post("/search_vehicles", auth, searchVehicles);
 
 module.exports = router;

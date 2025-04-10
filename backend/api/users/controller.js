@@ -1,7 +1,7 @@
 const User = require("./model.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
+const User = require("./model.js");
 const generateToken = (id, username, email) => {
   return jwt.sign({ id, username, email }, process.env.JWT_Secret, {
     expiresIn: "1h",
@@ -128,10 +128,10 @@ const updateUsername = async (req, res) => {
 
   try {
     // Replace the hardcoded user ID with the desired ID
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     // Find the user by ID
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId);
 
     if (!user) {
       result.message = "User not found";
@@ -202,8 +202,6 @@ const updateProfileImage = async (req, res) => {
     });
   }
 };
-
-
 
 module.exports = {
   signup,

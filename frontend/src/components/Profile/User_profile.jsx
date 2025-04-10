@@ -81,6 +81,7 @@ const UserProfile = () => {
       setIsSubmitting(true);
       const response = await api.updateUsername({
         username: userData.username,
+        
       });
 
       if (response.data.status === 1) {
