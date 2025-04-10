@@ -14,8 +14,7 @@ import Sign_up_captains from "./components/Sign_up/Sign_up_captains";
 import Main_home from "./components/main_home/Home1";
 import CaptainDashboard from "./components/captain_dahboard/CaptainDashboard";
 import VehicleSearch from "./components/Book_vehicle/VehicleSearch";
-import UserProfile from "./components/Profile/User_profile";
-import CaptainProfile from "./components/Profile/Captain_profile";
+
 const RedirectToDashboard = () => {
   const navigate = useNavigate();
 
@@ -53,8 +52,6 @@ function App() {
             <Route path="/Main_home" element={<Main_home />} />
             <Route path="/CaptainDashboard" element={<CaptainDashboard />} />
             <Route path="/VehicleSearch" element={<VehicleSearch />} />
-            <Route path="/User_profile" element={<UserProfile />} />
-            <Route path="/captain_profile" element={<CaptainProfile />} />
           </Routes>
         </Router>
       </AuthProvider>
