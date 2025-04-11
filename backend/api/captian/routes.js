@@ -11,6 +11,7 @@ const {
   getCaptainProfile,
   updateCaptainUsername,
   updateCaptainProfileImage,
+  searchVehicles
 } = require("./captain controller");
 
 const router = express.Router();

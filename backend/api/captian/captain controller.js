@@ -250,60 +250,6 @@ const updateVehicleStatus = async (req, res) => {
 };
 
 // Search Vehicles Within Radius (Geo Search)
-const searchVehicles = async (req, res) => {
-  try {
-    const { pickup, searchRadius } = req.body;
-
-    if (!pickup || !pickup.coordinates || !searchRadius) {
-      return res.status(400).json({
-        status: 0,
-        message: "Invalid pickup location or radius",
-      });
-    }
-
-    // Flatten all captain vehicles & filter
-    const captains = await Captain.find({
-      vehicles: { $exists: true, $ne: [] },
-    });
-
-    const matchingVehicles = [];
-
-    for (const captain of captains) {
-      for (const vehicle of captain.vehicles) {
-        if (
-          vehicle.isLive &&
-          vehicle.location &&
-          vehicle.location.coordinates
-        ) {
-          const [lng, lat] = vehicle.location.coordinates;
-
-          const R = 6371; // Earth radius in km
-          const toRad = (val) => (val * Math.PI) / 180;
-
-          const dLat = toRad(pickup.coordinates.lat - lat);
-          const dLng = toRad(pickup.coordinates.lng - lng);
-          const a =
-            Math.sin(dLat / 2) ** 2 +
-            Math.cos(toRad(lat)) *
-              Math.cos(toRad(pickup.coordinates.lat)) *
-              Math.sin(dLng / 2) ** 2;
-
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          const distance = R * c;
-
-          if (distance <= searchRadius) {
-            matchingVehicles.push(vehicle);
-          }
-        }
-      }
-    }
-
-    res.status(200).json({ status: 1, data: matchingVehicles });
-  } catch (error) {
-    console.error("Error searching vehicles:", error);
-    res.status(500).json({ status: 0, message: error.message });
-  }
-};
 const getCaptainProfile = async (req, res) => {
   const result = {
     status: 0,
