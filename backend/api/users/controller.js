@@ -1,4 +1,3 @@
-
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("./model.js");
@@ -127,18 +126,21 @@ const updateUsername = async (req, res) => {
   };
 
   try {
-    // Replace the hardcoded user ID with the desired ID
     const userId = req.user.id;
+    const newUsername = req.body.username;
 
-    // Find the user by ID
-    const user = await User.findById(userId);
+    // Find and update the user
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { username: newUsername },
+      { new: true }
+    ).select("-password");
 
     if (!user) {
       result.message = "User not found";
       return res.status(404).json(result);
     }
 
-    // Populate the response with user data
     result.status = 1;
     result.data = {
       _id: user._id,
