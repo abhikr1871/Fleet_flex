@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const vehicleSchema = new mongoose.Schema(
   {
+    captainId: { type: mongoose.Schema.Types.ObjectId, ref: "Captain", required: true },
     name: { type: String, required: true },
     model: { type: String, required: true },
     capacity: { type: Number, required: true },
@@ -56,6 +57,9 @@ const captainSchema = new mongoose.Schema(
       default: null, // Default value for profile image
     },
     vehicles: [vehicleSchema],
+    rideRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
+    upcomingrides: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
+    completedrides: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

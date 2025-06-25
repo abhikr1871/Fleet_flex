@@ -3,7 +3,7 @@ const { signup, login, getProfile, updateUsername,updateProfileImage } = require
 const authenticate = require("../../middleware/auth");
 const upload = require("../s3Uploader"); // Import S3 configuration
 const router = express.Router();
-
+const { getUpcomingRides } = require("./controller");
 router.post("/signup", signup);
 router.post("/login", login);
 router.get("/profile", authenticate, getProfile);
@@ -14,4 +14,5 @@ router.post(
   upload.single("profileImage"),
   updateProfileImage
 );
+router.get("/upcoming-rides", authenticate, getUpcomingRides);
 module.exports = router;

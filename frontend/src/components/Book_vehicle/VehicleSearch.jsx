@@ -263,7 +263,7 @@ const VehicleSearch = () => {
         loadCapacity: loadCapacity ? parseInt(loadCapacity) : null,
         sortBy,
         distance: routeInfo.distance,
-        searchRadius: 10, // Radius in kilometers
+        searchRadius: 10,
       };
 
       console.log("Search Params:", searchParams);
@@ -310,7 +310,7 @@ const VehicleSearch = () => {
             onSelectLocation={(location) =>
               handleLocationSelect("pickup", location)
             }
-            placeholder="Enter pickup location"
+            placeholder=".      Enter pickup location"
             required={true}
           />
           <button
@@ -332,7 +332,7 @@ const VehicleSearch = () => {
             onSelectLocation={(location) =>
               handleLocationSelect("drop", location)
             }
-            placeholder="Enter drop location (optional)"
+            placeholder=".     Enter drop location (optional)"
             required={false}
           />
           <button

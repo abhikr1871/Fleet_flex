@@ -11,7 +11,8 @@ const {
   getCaptainProfile,
   updateCaptainUsername,
   updateCaptainProfileImage,
-  searchVehicles
+  searchVehicles,
+  getCaptainRideRequests
 } = require("./captain controller");
 
 const router = express.Router();
@@ -37,5 +38,6 @@ router.post(
   updateCaptainProfileImage
 ); // Update captain profile image
 router.post("/search_vehicles", auth, searchVehicles);
+router.get("/ride-requests", auth, getCaptainRideRequests);
 
 module.exports = router;

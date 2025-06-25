@@ -40,7 +40,6 @@ export const delete_vehicle = (vehicleId, statusData) =>
 export const search_vehicles = (searchQuery) =>
   API.post(`/captain/search_vehicles`, searchQuery);
 
-
 export const getProfile = () => API.get("/users/profile");
 export const updateProfileImage = (imageData) =>
   API.post("/users/update-profile-image", imageData, {
@@ -56,6 +55,23 @@ export const updateCaptainProfileImage = (imageData) =>
   });
 export const updateCaptainUsername = (usernameData) =>
   API.put("/captain/update-username", usernameData);
+
+export const createBooking = (bookingData) => {
+  const token = localStorage.getItem("token"); // adjust key if needed
+  return API.post("/bookings", bookingData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+// Get all ride requests for the captain
+export const getCaptainRideRequests = () => API.get("/captain/ride-requests");
+// Respond to a ride request (accept or reject)
+export const respondToRideRequest = (bookingId, status) =>
+  API.patch(`/bookings/${bookingId}`, { status });
+
+export const getUpcomingRides = () => API.get("/users/upcoming-rides");
 
 export default {
   // Auth exports
@@ -73,8 +89,13 @@ export default {
   updateVehicleStatus,
   delete_vehicle,
   search_vehicles,
-
+  // Captain exports
   getCaptainProfile,
   updateCaptainProfileImage,
   updateCaptainUsername,
+  // Booking export
+  createBooking,
+  getCaptainRideRequests,
+  respondToRideRequest,
+  getUpcomingRides,
 };

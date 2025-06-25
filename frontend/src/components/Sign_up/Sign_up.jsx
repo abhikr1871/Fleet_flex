@@ -5,11 +5,11 @@ import { signup } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 
-
 const SignUp = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuthContext();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState(""); // <-- Add phone state
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
@@ -20,21 +20,21 @@ const SignUp = () => {
   }, [isAuthenticated]);
 
   const submitHandler = async (e) => {
-
     e.preventDefault();
     try {
-      const response = await signup({ username, email, password });
+      const response = await signup({ username, email, phone, password }); // <-- Include phone
       console.log("response", response);
       if (response?.data?.status === 1) {
         localStorage.setItem("token", response?.data?.data?.token);
-        localStorage.setItem("userId", response?.data?.data?.user_id);
         localStorage.setItem("username", response?.data?.data?.username);
         localStorage.setItem("role", "user");
         setIsAuthenticated(true);
         window.alert("Signup successful!");
         //navigate("/");
       } else {
-        window.alert(response?.data?.message || "Signup failed. Please try again.");
+        window.alert(
+          response?.data?.message || "Signup failed. Please try again."
+        );
       }
     } catch (error) {
       console.error("Signup error:", error?.message);
@@ -42,6 +42,7 @@ const SignUp = () => {
     }
     setEmail("");
     setUsername("");
+    setPhone(""); // <-- Reset phone
     setPassword("");
   };
 
@@ -88,6 +89,17 @@ const SignUp = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="input-group">
+            <input
+              type="tel"
+              placeholder="Phone Number"
+              required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              pattern="[0-9]{10,15}"
+              title="Please enter a valid phone number"
             />
           </div>
           <div className="input-group">

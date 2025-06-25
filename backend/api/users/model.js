@@ -10,9 +10,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    phoneNumber: {
+    phone: {
+      // <-- Use 'phone' instead of 'phoneNumber'
       type: String,
-      default: null,
+      required: true,
     },
     location: {
       type: { type: String, enum: ["Point"], default: "Point" },
@@ -26,6 +27,10 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    upcomingrides: [
+          { type: mongoose.Schema.Types.ObjectId, ref: "Booking" }
+        ],
+        completedrides: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
   },
   { timestamps: true }
 );

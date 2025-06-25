@@ -63,42 +63,88 @@ const SearchResults = () => {
   return (
     <div className="search-results-container">
       <div className="search-summary-bar">
-  <div className="search-field">
-    <label>Pickup</label>
-    <input type="text" value={searchParams.pickup?.address || ""} readOnly />
-  </div>
-  <div className="arrow-icon">⇄</div>
-  <div className="search-field">
-    <label>Drop</label>
-    <input type="text" value={searchParams.drop?.address || ""} readOnly />
-  </div>
-  <div className="search-field">
-    <label>Distance</label>
-    <input type="text" value={`${searchParams.distance || 0} km`} readOnly />
-  </div>
-  <button className="modify-button" onClick={() => navigate("/VehicleSearch")}>Modify Search</button>
-</div>
+        <div className="search-field">
+          <label>Pickup</label>
+          <input
+            type="text"
+            value={searchParams.pickup?.address || ""}
+            readOnly
+          />
+        </div>
+        <div className="arrow-icon">⇄</div>
+        <div className="search-field">
+          <label>Drop</label>
+          <input
+            type="text"
+            value={searchParams.drop?.address || ""}
+            readOnly
+          />
+        </div>
+        <div className="search-field">
+          <label>Distance</label>
+          <input
+            type="text"
+            value={`${searchParams.distance || 0} km`}
+            readOnly
+          />
+        </div>
+        <button
+          className="modify-button"
+          onClick={() => navigate("/VehicleSearch")}
+        >
+          Modify Search
+        </button>
+      </div>
 
       <div className="vehicle-list">
-  {vehicles.map((vehicle) => {
-    const distance = parseFloat(searchParams.distance || 0); // Ensure distance is a number
-    const totalPrice = distance * vehicle.perKmRate; // Calculate total price
+        {vehicles.map((vehicle) => {
+          const distance = parseFloat(searchParams.distance || 0); // Ensure distance is a number
+          const totalPrice = distance * vehicle.perKmRate; // Calculate total price
 
-    return (
-      <div key={vehicle._id} className="vehicle-card">
-        <img src={vehicle.photo} alt={vehicle.name} className="vehicle-image" />
-        <h3>{vehicle.name}</h3>
-        <p>Model: {vehicle.model}</p>
-        <p>Capacity: {vehicle.capacity} passengers</p>
-        <p>Rate: ₹{vehicle.perKmRate} per km</p>
-        <p>Type: {vehicle.type}</p>
-        <p>Total Price: <strong>₹{totalPrice.toFixed(2)}</strong></p> {/* Make total price bold */}
-        <button className="book-button">Book Now</button>
+          return (
+            <div key={vehicle._id} className="vehicle-card">
+              <img
+                src={vehicle.photo}
+                alt={vehicle.name}
+                className="vehicle-image"
+              />
+              <h3>{vehicle.name}</h3>
+              <p>Model: {vehicle.model}</p>
+              <p>Capacity: {vehicle.capacity} passengers</p>
+              <p>Rate: ₹{vehicle.perKmRate} per km</p>
+              <p>Type: {vehicle.type}</p>
+              <p>
+                Total Price: <strong>₹{totalPrice.toFixed(2)}</strong>
+              </p>{" "}
+              {/* Make total price bold */}
+              <button
+                className="book-button"
+                onClick={() => {
+                  if (vehicle && searchParams) {
+                    navigate("/vehicle-details", {
+                      state: {
+                        vehicle: {
+                          ...vehicle,
+                          captain: vehicle.captain || {}, // Ensure captain object exists
+                        },
+                        searchParams: {
+                          ...searchParams,
+                          pickup: searchParams.pickup || {},
+                          drop: searchParams.drop || {},
+                        },
+                      },
+                    });
+                  } else {
+                    alert("Unable to load vehicle details. Please try again.");
+                  }
+                }}
+              >
+                Book Now
+              </button>
+            </div>
+          );
+        })}
       </div>
-    );
-  })}
-</div>
-
     </div>
   );
 };

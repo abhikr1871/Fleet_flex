@@ -327,6 +327,29 @@ const CaptainDashboard = () => {
             <FaPlus />
             <span>Add New Vehicle</span>
           </button>
+          {/* Ride Requests Button */}
+          <button
+            className="ride-requests-btn"
+            onClick={() => navigate("/riderequests")}
+            style={{
+              marginLeft: "1rem",
+              background: "#2563eb",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              padding: "0.7rem 1.5rem",
+              fontWeight: 600,
+              fontSize: "1rem",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              boxShadow: "0 2px 8px 0 #2563eb22"
+            }}
+          >
+            <FaCheckCircle />
+            <span>Ride Requests</span>
+          </button>
         </div>
 
         <div className="vehicles-section">

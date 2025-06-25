@@ -26,19 +26,17 @@ const signup = async (req, res) => {
       return res.status(400).json(result);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
     const captainCount = await Captain.countDocuments();
     const captainId = captainCount + 1;
 
     const captain = await Captain.create({
       username,
       email,
-      password: hashedPassword,
+      password,
       captain_id: captainId,
     });
 
-    result.status = 1;
-    result.data = {
+    const resp_data = {
       _id: captain._id,
       captain_id: captainId,
       username: captain.username,
@@ -46,6 +44,8 @@ const signup = async (req, res) => {
       token: generateToken(captain._id, captain.username, captain.email),
     };
 
+    result.data = resp_data;
+    result.status = 1;
     res.status(200).json(result);
   } catch (error) {
     result.message = error.message;
@@ -66,19 +66,21 @@ const login = async (req, res) => {
   try {
     const captain = await Captain.findOne({ email });
     if (captain && (await bcrypt.compare(password, captain.password))) {
-      result.status = 1;
-      result.data = {
+      const resp_data = {
         _id: captain._id,
-        // captain_id: captain.captain_id,
+        captain_id: captain.captain_id,
         username: captain.username,
         email: captain.email,
-        vehicle: captain.vehicles || [],
+        vehicle: captain.vehicle, // Return vehicle details if available
         token: generateToken(captain._id, captain.username, captain.email),
       };
-      return res.status(200).json(result);
+
+      result.data = resp_data;
+      result.status = 1;
+      res.status(200).json(result);
     } else {
       result.message = "Invalid email or password";
-      return res.status(401).json(result);
+      res.status(401).json(result);
     }
   } catch (error) {
     result.message = error.message;
@@ -104,80 +106,21 @@ const addVehicle = async (req, res) => {
       return res.status(404).json({ status: 0, message: "Captain not found" });
     }
 
-    const {
-      name,
-      model,
-      capacity,
-      perKmRate,
-      numberplate,
-      type,
-      fuelType,
-      weightCapacity,
-      acAvailable,
-    } = req.body;
-
-    const dimensions = {
-      length: req.body["dimensions.length"] || 0,
-      width: req.body["dimensions.width"] || 0,
-      height: req.body["dimensions.height"] || 0,
+    // Get vehicle data from request body
+    const vehicleData = {
+      ...req.body,
+      captainId: req.user.id, // Add the captainId here
+      photo: req.file?.location, // AWS S3 file URL
     };
 
-    const driver = {
-      name: req.body["driver.name"],
-      contact: req.body["driver.contact"],
-      licenseNumber: req.body["driver.licenseNumber"],
-    };
-
-    if (
-      !name ||
-      !model ||
-      !capacity ||
-      !perKmRate ||
-      !numberplate ||
-      !type ||
-      !fuelType ||
-      !driver.name ||
-      !driver.contact ||
-      !driver.licenseNumber
-    ) {
-      return res
-        .status(400)
-        .json({ status: 0, message: "Missing required fields" });
-    }
-
-    const photograph = req.file?.location;
-    if (!photograph) {
-      return res
-        .status(400)
-        .json({ status: 0, message: "Image upload failed" });
-      return res
-        .status(400)
-        .json({ status: 0, message: "Image upload failed" });
-    }
-
-    const newVehicle = {
-      name,
-      model,
-      capacity,
-      perKmRate,
-      numberplate,
-      type,
-      fuelType,
-      weightCapacity: weightCapacity || 0,
-      acAvailable: acAvailable || false,
-      photo: photograph,
-      isLive: false,
-      dimensions,
-      driver,
-    };
-
-    captain.vehicles.push(newVehicle);
+    // Add the vehicle to captain's vehicles array
+    captain.vehicles.push(vehicleData);
     await captain.save();
 
-    res.status(200).json({
+    res.status(201).json({
       status: 1,
       message: "Vehicle added successfully",
-      data: newVehicle,
+      data: captain.vehicles[captain.vehicles.length - 1],
     });
   } catch (error) {
     console.error("Error adding vehicle:", error);
@@ -201,7 +144,9 @@ const delete_vehicle = async (req, res) => {
         .json({ status: 0, message: "Vehicle not found or not deleted" });
     }
 
-    res.status(200).json({ status: 1, message: "Vehicle deleted successfully" });
+    res
+      .status(200)
+      .json({ status: 1, message: "Vehicle deleted successfully" });
   } catch (error) {
     console.error("Error deleting vehicle:", error);
     res.status(500).json({ status: 0, message: error.message });
@@ -364,7 +309,7 @@ const updateCaptainProfileImage = async (req, res) => {
       message: error.message,
     });
   }
-};// Search Vehicles Within Radius (Geo Search)
+}; // Search Vehicles Within Radius (Geo Search)
 const searchVehicles = async (req, res) => {
   try {
     const { pickup, searchRadius } = req.body;
@@ -420,6 +365,22 @@ const searchVehicles = async (req, res) => {
   }
 };
 
+const getCaptainRideRequests = async (req, res) => {
+  try {
+    const captain = await Captain.findById(req.user.id)
+      .populate("rideRequests") // This will populate the rideRequests array with Booking documents
+      .lean();
+
+    if (!captain) {
+      return res.status(404).json({ status: 0, message: "Captain not found" });
+    }
+
+    res.status(200).json({ status: 1, data: captain.rideRequests || [] });
+  } catch (error) {
+    res.status(500).json({ status: 0, message: error.message });
+  }
+};
+
 module.exports = {
   signup,
   login,
@@ -431,4 +392,5 @@ module.exports = {
   getCaptainProfile,
   updateCaptainUsername,
   updateCaptainProfileImage,
+  getCaptainRideRequests,
 };

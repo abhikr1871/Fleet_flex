@@ -59,6 +59,10 @@ const Header = () => {
                 <FaComments />
                 <span>Chats</span>
               </li>
+              <li onClick={() => navigate("/upcoming-rides")}>
+                <FaCheckCircle />
+                <span>Upcoming Rides</span>
+              </li>
               <li onClick={() => navigate("/completed-rides")}>
                 <FaCheckCircle />
                 <span>Completed Rides</span>

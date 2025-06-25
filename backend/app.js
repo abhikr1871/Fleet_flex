@@ -2,6 +2,7 @@ const express = require('express');
 const connectDB = require('./api/config/db');
 const userRoutes = require('./api/users/routes');
 const captainRoutes = require("./api/captian/routes");
+const bookingroutes=require("./api/booking/bookingRoutes")
 const path = require("path");
 const cors = require('cors');
 require('dotenv').config();
@@ -35,5 +36,5 @@ app.post('/upload', async (req, res) => {
 // Register API routes
 app.use('/api/users', userRoutes);
 app.use('/api/captain', captainRoutes);
-
+app.use("/api/bookings", bookingroutes);
 module.exports = app;

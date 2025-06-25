@@ -7,30 +7,27 @@
   font-family: "Montserrat", sans-serif;
 }
 
-/* Enhanced Login Page */
 .login-page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   padding: 2rem;
 }
 
-/* Container with glass effect */
 .login-container {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 59, 48, 0.2);
   border-radius: 20px;
   padding: 2.5rem;
   width: 100%;
   max-width: 450px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 35px rgba(255, 59, 48, 0.15);
   animation: containerAppear 0.6s ease-out;
 }
 
-/* Enhanced Header */
 .heading {
   display: flex;
   justify-content: space-between;
@@ -41,7 +38,7 @@
 .heading h2 {
   font-size: 2rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #2d3436 0%, #000000 100%);
+  background: linear-gradient(135deg, #ff3b30 0%, #ff9500 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -49,7 +46,7 @@
 .close_btn {
   background: transparent;
   border: none;
-  color: #ff6b6b;
+  color: #ff3b30;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -57,11 +54,10 @@
 }
 
 .close_btn:hover {
-  background: rgba(255, 107, 107, 0.1);
+  background: rgba(255, 59, 48, 0.1);
   transform: scale(1.05);
 }
 
-/* Enhanced Social Buttons */
 .social-buttons {
   display: grid;
   gap: 1rem;
@@ -74,10 +70,10 @@
   justify-content: center;
   gap: 1rem;
   padding: 1rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid rgba(255, 59, 48, 0.3);
   border-radius: 12px;
   background: white;
-  color: #2d3436;
+  color: #1a1a1a;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -91,13 +87,13 @@
 
 .social-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(255, 59, 48, 0.2);
+  border-color: #ff3b30;
 }
 
-.social-btn.google { border-color: #ea4335; }
-.social-btn.apple { border-color: #000000; }
+.social-btn.google { border-color: #ff3b30; }
+.social-btn.apple { border-color: #1a1a1a; }
 
-/* Enhanced Divider */
 .divider {
   position: relative;
   text-align: center;
@@ -120,17 +116,16 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: #e9ecef;
+  background: rgba(255, 59, 48, 0.2);
   z-index: 0;
 }
 
-/* Enhanced Form */
 .login-form {
   margin-top: 2rem;
 }
 
 .sing-inst {
-  color: #2d3436;
+  color: #1a1a1a;
   margin-bottom: 1.5rem;
   font-size: 1.1rem;
 }
@@ -142,7 +137,7 @@
 .input-group input {
   width: 100%;
   padding: 1rem 1.2rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid rgba(255, 59, 48, 0.2);
   border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -150,12 +145,11 @@
 }
 
 .input-group input:focus {
-  border-color: #6c5ce7;
+  border-color: #ff3b30;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.1);
 }
 
-/* Enhanced Buttons */
 .login-btn {
   width: 100%;
   padding: 1rem;
@@ -165,32 +159,31 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #6c5ce7;
+  background: linear-gradient(135deg, #ff3b30 0%, #ff9500 100%);
   color: white;
   margin-top: 1rem;
 }
 
 .login-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+  box-shadow: 0 5px 15px rgba(255, 59, 48, 0.3);
 }
 
 .captain-login {
   background: transparent;
-  border: 2px solid #6c5ce7;
-  color: #6c5ce7;
+  border: 2px solid #ff3b30;
+  color: #ff3b30;
   margin-top: 1rem;
 }
 
 .captain-login:hover {
-  background: rgba(108, 92, 231, 0.1);
+  background: rgba(255, 59, 48, 0.1);
 }
 
-/* Enhanced Links */
 .forgot-password {
   display: block;
   text-align: right;
-  color: #6c5ce7;
+  color: #ff3b30;
   text-decoration: none;
   font-size: 0.9rem;
   margin: 1rem 0;
@@ -198,7 +191,7 @@
 }
 
 .forgot-password:hover {
-  color: #5549bd;
+  color: #ff9500;
 }
 
 .signup-link {
@@ -208,17 +201,16 @@
 }
 
 .signup-link a {
-  color: #6c5ce7;
+  color: #ff3b30;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .signup-link a:hover {
-  color: #5549bd;
+  color: #ff9500;
 }
 
-/* Animations */
 @keyframes containerAppear {
   from {
     opacity: 0;
@@ -230,7 +222,33 @@
   }
 }
 
-/* Responsive Design */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    margin: 1rem;
+    padding: 2rem;
+  }
+
+  .heading h2 {
+    font-size: 1.8rem;
+  }
+}
+
 @media (max-width: 480px) {
   .login-container {
     padding: 1.5rem;
@@ -243,6 +261,14 @@
   }
 
   .input-group input {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px;
+  }
+
+  .social-buttons {
+    gap: 0.8rem;
+  }
+
+  .social-btn {
+    padding: 0.8rem;
   }
 }

@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("./model.js");
+const Booking = require("../booking/Booking");
+
 const generateToken = (id, username, email) => {
   return jwt.sign({ id, username, email }, process.env.JWT_Secret, {
     expiresIn: "1h",
@@ -8,7 +10,7 @@ const generateToken = (id, username, email) => {
 };
 
 const signup = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, phone } = req.body; // <-- include phone
 
   const result = {
     status: 0,
@@ -31,6 +33,7 @@ const signup = async (req, res) => {
       username,
       email,
       password,
+      phone, // <-- save phone
       user_id: userId,
     });
 
@@ -39,6 +42,7 @@ const signup = async (req, res) => {
       user_id: userId,
       username: user.username,
       email: user.email,
+      phone: user.phone, // <-- return phone
       token: generateToken(user._id, user.username, user.email),
     };
 
@@ -205,10 +209,22 @@ const updateProfileImage = async (req, res) => {
   }
 };
 
+const getUpcomingRides = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    // Find all bookings in user's upcomingrides array
+    const user = await User.findById(userId).populate("upcomingrides");
+    res.json({ status: 1, data: user.upcomingrides });
+  } catch (error) {
+    res.status(500).json({ status: 0, message: error.message });
+  }
+};
+
 module.exports = {
   signup,
   login,
   getProfile,
   updateUsername,
   updateProfileImage,
+  getUpcomingRides,
 };
