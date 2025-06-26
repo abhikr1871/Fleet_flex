@@ -55,7 +55,7 @@ const Header = () => {
                 <FaHome />
                 <span>Home</span>
               </li>
-              <li onClick={() => navigate("/chats")}>
+              <li onClick={() => navigate("/chat-history")}>
                 <FaComments />
                 <span>Chats</span>
               </li>

@@ -22,6 +22,8 @@ import Riderequests from "./components/captain_dahboard/Riderequests";
 import RideRequestDetails from "./components/captain_dahboard/RideRequestDetails";
 import UpcomingRides from "./components/upcoming_rides/UpcomingRides";
 import UpcomingRideDetails from "./components/upcoming_rides/UpcomingRideDetails";
+import ChatHistory from "./components/Chat/ChatHistory";
+import Chat from "./components/Chat/Chat";
 const RedirectToDashboard = () => {
   const navigate = useNavigate();
 
@@ -65,6 +67,8 @@ function App() {
             <Route path="/vehicle-details" element={<VehicleDetails />} />
             <Route path="/riderequests" element={<Riderequests />} />
             <Route path="/upcoming-rides" element={<UpcomingRides />} />
+            <Route path="/chat-history" element={<ChatHistory />} />
+            <Route path="/chat" element={<Chat />} />
             <Route
               path="/upcoming-ride-details"
               element={<UpcomingRideDetails />}

@@ -28,7 +28,8 @@ const Login = () => {
 
       if (response?.data?.status === 1) {
         localStorage.setItem("token", response?.data?.data?.token);
-        localStorage.setItem("userId", response?.data?.data?.user_id);
+        localStorage.setItem("userId", response?.data?.data?._id);
+        console.log("User ID:", response?.data?.data?._id);
         localStorage.setItem("username", response?.data?.data?.username);
         localStorage.setItem("role", "user");
         setIsAuthenticated(true);

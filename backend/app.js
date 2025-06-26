@@ -37,4 +37,6 @@ app.post('/upload', async (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/captain', captainRoutes);
 app.use("/api/bookings", bookingroutes);
+app.use("/api/messages", require("./routes/messages"));
+app.use("/api/chat-history", require("./routes/chatRoutes"));
 module.exports = app;

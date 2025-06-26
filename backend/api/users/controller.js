@@ -4,9 +4,7 @@ const User = require("./model.js");
 const Booking = require("../booking/Booking");
 
 const generateToken = (id, username, email) => {
-  return jwt.sign({ id, username, email }, process.env.JWT_Secret, {
-    expiresIn: "1h",
-  });
+  return jwt.sign({ id, username, email }, process.env.JWT_Secret,);
 };
 
 const signup = async (req, res) => {

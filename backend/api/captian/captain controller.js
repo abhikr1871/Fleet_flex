@@ -4,9 +4,7 @@ const Captain = require("./captain_model"); // Adjust path as needed
 
 // Generate JWT Token
 const generateToken = (id, username, email) => {
-  return jwt.sign({ id, username, email }, process.env.JWT_Secret, {
-    expiresIn: "30d",
-  });
+  return jwt.sign({ id, username, email }, process.env.JWT_Secret);
 };
 
 // Captain Signup
@@ -351,9 +349,9 @@ const searchVehicles = async (req, res) => {
           const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
           const distance = R * c;
 
-          if (distance <= searchRadius) {
+          
             matchingVehicles.push(vehicle);
-          }
+          
         }
       }
     }

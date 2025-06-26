@@ -254,7 +254,7 @@ const CaptainDashboard = () => {
     {
       icon: <FaTachometerAlt />,
       text: "Dashboard",
-      path: "/captain-dashboard",
+      path: "/captainDashboard",
     },
     {
       icon: <FaCheckCircle />,
@@ -262,7 +262,7 @@ const CaptainDashboard = () => {
       path: "/completed-rides",
     },
     { icon: <FaMoneyBillWave />, text: "Earnings", path: "/earnings" },
-    { icon: <FaComments />, text: "Messages", path: "/chats" },
+    { icon: <FaComments />, text: "Messages", path: "/chat-history" },
     { icon: <FaUser />, text: "Profile", path: "/captain_profile" },
   ];
 

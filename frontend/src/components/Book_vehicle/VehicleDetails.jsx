@@ -59,6 +59,24 @@ const VehicleDetails = () => {
       setIsBooking(false);
     }
   };
+  const currentUser={
+    _id: localStorage.getItem("userId"),
+    username: localStorage.getItem("username"),
+  }
+  const profile = {
+    _id: vehicle.captainId, // Assuming captainId is the ID of the captain
+    username: vehicle.driver.name, // Assuming driver's name is used as username
+  };
+  const handleChatClick = () => {
+   console.log(currentUser, profile);
+
+    navigate("/chat", {
+      state: {
+        currentUser,
+        receiverUser: profile,
+      },
+    });
+  };
 
   return (
     <div className="vehicle-details-container">
@@ -151,6 +169,11 @@ const VehicleDetails = () => {
           disabled={isBooking}
         >
           {isBooking ? "Sending Request..." : "Confirm Booking"}
+        </button>
+        <button
+          onClick={handleChatClick}
+        >
+          start chat
         </button>
       </div>
     </div>

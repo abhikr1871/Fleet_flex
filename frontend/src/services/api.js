@@ -73,6 +73,9 @@ export const respondToRideRequest = (bookingId, status) =>
 
 export const getUpcomingRides = () => API.get("/users/upcoming-rides");
 
+export const getChatHistory = () => API.get("/chat-history");
+export const getChatMessages = (senderId, receiverId) =>
+  API.get(`/messages/${senderId}/${receiverId}`);
 export default {
   // Auth exports
   signup,

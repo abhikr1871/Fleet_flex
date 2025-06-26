@@ -27,6 +27,7 @@ const SignUp = () => {
       if (response?.data?.status === 1) {
         localStorage.setItem("token", response?.data?.data?.token);
         localStorage.setItem("username", response?.data?.data?.username);
+        localStorage.setItem("userId", response?.data?.data?._id);
         localStorage.setItem("role", "user");
         setIsAuthenticated(true);
         window.alert("Signup successful!");

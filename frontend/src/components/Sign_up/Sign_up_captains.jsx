@@ -22,7 +22,7 @@ const Sign_up_captains = () => {
           console.log("response", response);
           if (response?.data?.status === 1) {
             localStorage.setItem("token", response?.data?.data?.token);
-            localStorage.setItem("userId", response?.data?.data?.user_id);
+            localStorage.setItem("userId", response?.data?.data?._id);
             localStorage.setItem("username", response?.data?.data?.username);
             localStorage.setItem("role", "captain");
             setIsAuthenticated(true);
