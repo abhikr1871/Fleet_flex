@@ -13,7 +13,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
-});
+}); 
 
 io.on("connection", (socket) => {
   console.log("New client connected");
