@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const vehicleSchema = new mongoose.Schema(
   {
+    captainId: { type: mongoose.Schema.Types.ObjectId, ref: "Captain", required: true },
     name: { type: String, required: true },
     model: { type: String, required: true },
     capacity: { type: Number, required: true },
@@ -10,7 +11,7 @@ const vehicleSchema = new mongoose.Schema(
     numberplate: { type: String, required: true, unique: true },
     type: {
       type: String,
-      enum: ["transport", "passenger travel"],
+      enum: ["Car", "Truck", "Mini-Truck", "Traveler", "Bus"],
       required: true,
     },
     fuelType: {
@@ -43,17 +44,22 @@ const vehicleSchema = new mongoose.Schema(
       coordinates: { type: [Number], default: [0, 0] }, // [longitude, latitude]
     },
   },
-
   { timestamps: true }
 );
-
 
 const captainSchema = new mongoose.Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    profileImage: {
+      type: String,
+      default: null, // Default value for profile image
+    },
     vehicles: [vehicleSchema],
+    rideRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
+    upcomingrides: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
+    completedrides: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

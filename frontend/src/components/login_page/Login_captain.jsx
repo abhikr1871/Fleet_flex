@@ -18,7 +18,7 @@ const Login_captain = () => {
       if (response?.data?.status === 1) {
         // Store token and user ID
         localStorage.setItem("token", response?.data?.data?.token);
-        localStorage.setItem("userId", response?.data?.data?.user_id);
+        localStorage.setItem("userId", response?.data?.data?._id);
         localStorage.setItem("username", response?.data?.data?.username);
         localStorage.setItem("role", "captain");
         // Update auth state and navigate

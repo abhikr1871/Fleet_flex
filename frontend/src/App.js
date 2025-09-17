@@ -14,7 +14,16 @@ import Sign_up_captains from "./components/Sign_up/Sign_up_captains";
 import Main_home from "./components/main_home/Home1";
 import CaptainDashboard from "./components/captain_dahboard/CaptainDashboard";
 import VehicleSearch from "./components/Book_vehicle/VehicleSearch";
-
+import SearchResults from "./components/Book_vehicle/SearchResults";
+import UserProfile from "./components/Profile/User_profile";
+import CaptainProfile from "./components/Profile/Captain_profile";
+import VehicleDetails from "./components/Book_vehicle/VehicleDetails";
+import Riderequests from "./components/captain_dahboard/Riderequests";
+import RideRequestDetails from "./components/captain_dahboard/RideRequestDetails";
+import UpcomingRides from "./components/upcoming_rides/UpcomingRides";
+import UpcomingRideDetails from "./components/upcoming_rides/UpcomingRideDetails";
+import ChatHistory from "./components/Chat/ChatHistory";
+import Chat from "./components/Chat/Chat";
 const RedirectToDashboard = () => {
   const navigate = useNavigate();
 
@@ -29,7 +38,7 @@ const RedirectToDashboard = () => {
         navigate("/Main_home");
       }
     } else {
-      navigate("/home"); // Redirect to home if no token
+      navigate("/home");
     }
   }, [navigate]);
 
@@ -52,6 +61,22 @@ function App() {
             <Route path="/Main_home" element={<Main_home />} />
             <Route path="/CaptainDashboard" element={<CaptainDashboard />} />
             <Route path="/VehicleSearch" element={<VehicleSearch />} />
+            <Route path="/User_profile" element={<UserProfile />} />
+            <Route path="/captain_profile" element={<CaptainProfile />} />
+            <Route path="/search-results" element={<SearchResults />} />
+            <Route path="/vehicle-details" element={<VehicleDetails />} />
+            <Route path="/riderequests" element={<Riderequests />} />
+            <Route path="/upcoming-rides" element={<UpcomingRides />} />
+            <Route path="/chat-history" element={<ChatHistory />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route
+              path="/upcoming-ride-details"
+              element={<UpcomingRideDetails />}
+            />
+            <Route
+              path="/ride-request-details"
+              element={<RideRequestDetails />}
+            />
           </Routes>
         </Router>
       </AuthProvider>

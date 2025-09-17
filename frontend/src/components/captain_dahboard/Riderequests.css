@@ -1,0 +1,62 @@
+.ride-requests-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.ride-requests-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.ride-requests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.ride-request-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+  padding: 1.2rem 1.5rem;
+  cursor: pointer;
+  border: 1.5px solid #e5e7eb;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+.ride-request-card:hover {
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+  border: 1.5px solid #2563eb;
+}
+
+.ride-request-vehicle {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.ride-request-info {
+  color: #64748b;
+  font-size: 0.97rem;
+  margin-bottom: 4px;
+}
+
+.ride-request-price {
+  color: #2563eb;
+  font-weight: 600;
+  margin-top: 8px;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 600px) {
+  .ride-requests-container {
+    padding: 0.5rem;
+  }
+  .ride-requests-title {
+    font-size: 1.3rem;
+  }
+}

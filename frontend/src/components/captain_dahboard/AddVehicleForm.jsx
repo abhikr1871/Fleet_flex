@@ -85,8 +85,11 @@ const AddVehicleForm = ({
           <div className="input-group">
             <select name="type" required onChange={handleInputChange}>
               <option value="">Select Type</option>
-              <option value="transport">Transport</option>
-              <option value="passenger travel">Passenger Travel</option>
+              <option value="Car">Car</option>
+              <option value="Truck">Truck</option>
+              <option value="Mini-Truck">Mini_Truck</option>
+              <option value="Travler">Travler</option>
+              <option value="Bus">Bus</option>
             </select>
           </div>
 
@@ -98,36 +101,6 @@ const AddVehicleForm = ({
               <option value="CNG">CNG</option>
               <option value="electric">Electric</option>
             </select>
-          </div>
-
-          <div className="input-group">
-            <input
-              type="number"
-              name="dimensions.length"
-              placeholder=" "
-              onChange={handleInputChange}
-            />
-            <label>Length (m)</label>
-          </div>
-
-          <div className="input-group">
-            <input
-              type="number"
-              name="dimensions.width"
-              placeholder=" "
-              onChange={handleInputChange}
-            />
-            <label>Width (m)</label>
-          </div>
-
-          <div className="input-group">
-            <input
-              type="number"
-              name="dimensions.height"
-              placeholder=" "
-              onChange={handleInputChange}
-            />
-            <label>Height (m)</label>
           </div>
 
           <div className="input-group">

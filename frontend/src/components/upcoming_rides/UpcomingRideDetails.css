@@ -1,0 +1,83 @@
+/* UpcomingRides.css */
+.upcoming-rides-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+.upcoming-rides-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+.upcoming-rides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.upcoming-ride-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(37,99,235,0.08);
+  padding: 1.2rem 1.5rem;
+  cursor: pointer;
+  border: 1.5px solid #e5e7eb;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.upcoming-ride-card:hover {
+  box-shadow: 0 4px 20px rgba(37,99,235,0.15);
+  border: 1.5px solid #2563eb;
+}
+.upcoming-ride-vehicle {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.upcoming-ride-info {
+  color: #64748b;
+  font-size: 0.97rem;
+  margin-bottom: 4px;
+}
+.upcoming-ride-price {
+  color: #2563eb;
+  font-weight: 600;
+  margin-top: 8px;
+  font-size: 1.05rem;
+}
+
+/* UpcomingRideDetails.css */
+.upcoming-ride-details-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(37,99,235,0.08);
+  padding: 2rem;
+}
+.upcoming-ride-details-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #2563eb;
+  text-align: center;
+  font-weight: 700;
+}
+.upcoming-ride-details-row {
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+}
+.upcoming-ride-details-back-btn {
+  margin-top: 2rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+.upcoming-ride-details-back-btn:hover {
+  background: #1e40af;
+}

@@ -1,34 +1,43 @@
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
+const auth = require("../../middleware/auth");
+const upload = require("../s3Uploader"); // Import S3 configuration
 const {
   signup,
   login,
   getVehicles,
   addVehicle,
   updateVehicleStatus,
-  delete_vehicle
+  delete_vehicle,
+  getCaptainProfile,
+  updateCaptainUsername,
+  updateCaptainProfileImage,
+  searchVehicles,
+  getCaptainRideRequests
 } = require("./captain controller");
-const auth = require("../../middleware/auth");
+
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    const suffix = Date.now();
-    cb(null, suffix + "-" + file.originalname);
-  },
-});
-
-const upload = multer({ storage });
-
+// Authentication routes
 router.post("/captain_sign_up", signup);
 router.post("/captain_login", login);
+
+// Vehicle routes
 router.get("/vehicles", auth, getVehicles);
-router.post("/add_vehicle", auth, upload.single("photo"), addVehicle);
+router.post("/add_vehicle", auth, upload.single("photo"), addVehicle); // Updated for AWS S3
 router.patch("/update_vehicle_status/:vehicleId", auth, updateVehicleStatus);
 router.patch("/delete_vehicle/:vehicleId", auth, delete_vehicle);
+router.post("/search_vehicles", auth, searchVehicles);
+
+// Captain profile routes
+router.get("/profile", auth, getCaptainProfile); // Fetch captain profile
+router.put("/update-username", auth, updateCaptainUsername); // Update captain username
+router.post(
+  "/update-profile-image",
+  auth,
+  upload.single("profileImage"), // Middleware for handling file uploads
+  updateCaptainProfileImage
+); // Update captain profile image
+router.post("/search_vehicles", auth, searchVehicles);
+router.get("/ride-requests", auth, getCaptainRideRequests);
 
 module.exports = router;

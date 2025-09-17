@@ -1,0 +1,76 @@
+.ride-details-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+  padding: 2rem;
+}
+
+.ride-details-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #2563eb;
+  text-align: center;
+  font-weight: 700;
+}
+
+.ride-details-row {
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+}
+
+.ride-details-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 24px;
+}
+
+.ride-details-accept {
+  flex: 1;
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ride-details-accept:hover {
+  background: #059669;
+}
+
+.ride-details-reject {
+  flex: 1;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ride-details-reject:hover {
+  background: #b91c1c;
+}
+
+.ride-details-back-btn {
+  margin-top: 2rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.ride-details-back-btn:hover {
+  background: #1e40af;
+}
